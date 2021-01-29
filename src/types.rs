@@ -6,7 +6,8 @@ pub trait Key: Clone + Copy + PartialEq + Eq + PartialOrd + Ord + Hash {}
 pub trait Value: Clone + Copy + Default {}
 // impl<T: Clone + Copy + Default> Value for T {}
 
-/// Structure describing a vertex with a [`Key`] and a [`Value`]
+/// Structure describing a vertex with a [`Key`] and a [`Value`].
+#[derive(Clone, Copy)]
 pub struct Vertex<K, V>
 where
     K: Key,
@@ -16,17 +17,14 @@ where
     value: V,
 }
 
-impl<K, V> Clone for Vertex<K, V>
+/// Structure describing an edge with an origin [`Key`] and destination [`Key`].
+#[derive(Clone, Copy)]
+pub struct Edge<K>
 where
     K: Key,
-    V: Value,
 {
-    fn clone(&self) -> Self {
-        Vertex {
-            key: self.key.clone(),
-            value: self.value.clone(),
-        }
-    }
+    from: K,
+    to: K,
 }
 
 impl<K, V> Vertex<K, V>
@@ -60,5 +58,25 @@ where
     /// Set the value of the vertex.
     fn set_value(&mut self, value: V) {
         self.value = value
+    }
+}
+
+impl<K> Edge<K>
+where
+    K: Key,
+{
+    /// Create a new edge.
+    fn new(from: K, to: K) -> Self {
+        Edge { from, to }
+    }
+
+    /// Get the origin.
+    fn from(&self) -> &K {
+        &self.from
+    }
+
+    /// Get the destination
+    fn to(&self) -> &K {
+        &self.to
     }
 }
