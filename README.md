@@ -1,7 +1,7 @@
 # graphific
 Graphific is a graph & network data structure library written in Rust.
 
-## Aim of the library
+## Goals of the library
 Here are the different focus point of the library by decreasing order of importance:
 1. **Ready-to-use API** : well documented and easy to include in an already existing project.
 1. **Data integrity** : include functional programming.
