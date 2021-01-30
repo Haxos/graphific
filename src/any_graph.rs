@@ -13,10 +13,10 @@ where
     /// Get the vertices of the graph.
     fn vertices(&self) -> Vec<Vertex<K, V>>;
 
-    /// Get the edges of the graph
+    /// Get the edges of the graph.
     fn edges(&self) -> Vec<(Vertex<K, V>, Vertex<K, V>)>;
 
-    /// Add a new vertex then return the graph
+    /// Add a new vertex then return the graph.
     fn add_vertex(&self, vertex: Vertex<K, V>) -> Self;
 
     /// Remove a vertex by its key then return the given vertex if it exists.
