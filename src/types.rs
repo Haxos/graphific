@@ -1,10 +1,10 @@
 use std::hash::Hash;
 
 pub trait Key: Clone + Copy + PartialEq + Eq + PartialOrd + Ord + Hash {}
-// impl<T: Clone + Copy + Eq + PartialOrd + Ord + Hash> Key for T {}
+impl<T: Copy + Hash + Ord> Key for T {}
 
 pub trait Value: Clone + Copy + Default {}
-// impl<T: Clone + Copy + Default> Value for T {}
+impl<T: Copy + Default> Value for T {}
 
 /// Structure describing a vertex with a [`Key`] and a [`Value`].
 #[derive(Clone, Copy)]
@@ -33,7 +33,7 @@ where
     V: Value,
 {
     /// Create a new vertex with the default value.
-    fn new(key: K) -> Self {
+    pub fn new(key: K) -> Self {
         Vertex {
             key,
             value: V::default(),
@@ -41,22 +41,22 @@ where
     }
 
     /// Create a new vertex with a value.
-    fn with_value(key: K, value: V) -> Self {
+    pub fn with_value(key: K, value: V) -> Self {
         Vertex { key, value }
     }
 
     /// Get the key of the vertex.
-    fn key(&self) -> &K {
+    pub fn key(&self) -> &K {
         &self.key
     }
 
     /// Get the value of the vertex.
-    fn value(&self) -> &V {
+    pub fn value(&self) -> &V {
         &self.value
     }
 
     /// Set the value of the vertex.
-    fn set_value(&mut self, value: V) {
+    pub fn set_value(&mut self, value: V) {
         self.value = value
     }
 }
@@ -66,17 +66,17 @@ where
     K: Key,
 {
     /// Create a new edge.
-    fn new(from: K, to: K) -> Self {
+    pub fn new(from: K, to: K) -> Self {
         Edge { from, to }
     }
 
     /// Get the origin.
-    fn from(&self) -> &K {
+    pub fn from(&self) -> &K {
         &self.from
     }
 
     /// Get the destination
-    fn to(&self) -> &K {
+    pub fn to(&self) -> &K {
         &self.to
     }
 }
