@@ -20,8 +20,8 @@ where
     /// Add a new vertex then return the graph.
     fn add_vertex(&self, vertex: Vertex<K, V>) -> Option<Box<Self>>;
 
-    /// Remove a vertex by its key then return the given vertex if it exists.
-    fn remove_vertex_where_key(&self, key: K) -> Option<(Box<Self>, Vertex<K, V>)>;
+    /// Remove a vertex by its key then return the given vertex and its edges if it exists.
+    fn remove_vertex_where_key(&self, key: K) -> Option<(Box<Self>, Vertex<K, V>, Vec<Edge<K>>)>;
 
     /// Add a new edge then return the new graph.
     fn add_edge(&self, edge: Edge<K>) -> Option<Box<Self>>;

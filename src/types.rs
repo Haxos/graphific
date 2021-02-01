@@ -1,4 +1,5 @@
-use std::hash::Hash;
+use std::cmp::Ordering;
+use std::hash::{Hash, Hasher};
 
 pub trait Key: Clone + Copy + PartialEq + Eq + PartialOrd + Ord + Hash {}
 impl<T: Copy + Hash + Ord> Key for T {}
@@ -18,13 +19,60 @@ where
 }
 
 /// Structure describing an edge with an origin [`Key`] and destination [`Key`].
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct Edge<K>
 where
     K: Key,
 {
     from: K,
     to: K,
+}
+
+impl<K, V> Hash for Vertex<K, V>
+where
+    K: Key,
+    V: Value,
+{
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.key.hash(state);
+    }
+}
+
+impl<K, V> PartialEq for Vertex<K, V>
+where
+    K: Key,
+    V: Value,
+{
+    fn eq(&self, other: &Self) -> bool {
+        self.key.eq(other.key())
+    }
+}
+
+impl<K, V> Eq for Vertex<K, V>
+where
+    K: Key,
+    V: Value,
+{
+}
+
+impl<K, V> PartialOrd for Vertex<K, V>
+where
+    K: Key,
+    V: Value,
+{
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        self.key.partial_cmp(other.key())
+    }
+}
+
+impl<K, V> Ord for Vertex<K, V>
+where
+    K: Key,
+    V: Value,
+{
+    fn cmp(&self, other: &Self) -> Ordering {
+        self.key.cmp(other.key())
+    }
 }
 
 impl<K, V> Vertex<K, V>
