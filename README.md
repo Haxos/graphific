@@ -6,7 +6,7 @@ Here are the different focus point of the library by decreasing order of importa
 1. **Ready-to-use API** : well documented and easy to include in an already existing project.
 1. **Data integrity** : include functional programming.
 1. **Thorough tested** : A lot of unit tests.
-1. **Performance** : Big O optimized and parallelism.
+1. **Performance** : Big O notation optimized and parallelism.
 
 ## Contributing
 We welcome anyone and all kind of contribution !
