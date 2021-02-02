@@ -2,7 +2,9 @@ use crate::any_graph::AnyGraph;
 use crate::types::{Key, Value, Vertex};
 use crate::Edge;
 use std::borrow::{Borrow, BorrowMut};
-use std::collections::HashSet;
+use std::collections::{HashSet, HashMap};
+use crate::kinship::Kinship;
+use std::collections::hash_map::RandomState;
 
 #[derive(Clone)]
 pub struct SimpleDirectedGraph<K, V>
@@ -87,6 +89,16 @@ where
     }
 
     fn remove_all_edges_where_key(&self, key_from: K) -> Option<(Box<Self>, Vec<Edge<K>>)> {
+        unimplemented!()
+    }
+}
+
+impl <K,V> Kinship<K,V> for SimpleDirectedGraph<K,V> {
+    fn successors(&self) -> HashMap<Vertex<K, V>, Edge<K>, RandomState> {
+        unimplemented!()
+    }
+
+    fn predecessors(&self) -> HashMap<Vertex<K, V>, Edge<K>, RandomState> {
         unimplemented!()
     }
 }
