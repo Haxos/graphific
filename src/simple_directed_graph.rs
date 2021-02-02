@@ -37,8 +37,30 @@ where
     }
 
     fn remove_vertex_where_key(&self, key: K) -> Option<(Box<Self>, Vertex<K, V>, Vec<Edge<K>>)> {
+        let vertex: Vertex<K, V> = Vertex::new(key);
+
         let mut new_graph = self.clone();
-        unimplemented!()
+        return if let Some(removed_vertex) = self.vertices.get(&vertex) {
+            if new_graph.vertices.remove(&removed_vertex) {
+                let removed_edges: Vec<Edge<K>> = new_graph
+                    .edges
+                    .iter()
+                    .cloned()
+                    .filter(|edge| edge.from().eq(&vertex.key()) || edge.to().eq(&vertex.key()))
+                    .collect();
+                new_graph.edges = new_graph
+                    .edges
+                    .into_iter()
+                    .filter(|edge| !(edge.from().eq(&vertex.key()) || edge.to().eq(&vertex.key())))
+                    .collect();
+
+                Some((Box::new(new_graph), *removed_vertex, removed_edges))
+            } else {
+                None
+            }
+        } else {
+            None
+        };
     }
 
     fn add_edge(&self, edge: Edge<K>) -> Option<Box<Self>> {
@@ -57,7 +79,7 @@ where
     }
 
     fn add_edge_between_keys(&self, key_from: K, key_to: K) -> Option<Box<Self>> {
-        unimplemented!()
+        return self.add_edge(Edge::new(key_from, key_to));
     }
 
     fn remove_edge_where_keys(&self, key_from: K, key_to: K) -> Option<(Box<Self>, Edge<K>)> {
