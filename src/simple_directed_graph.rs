@@ -1,10 +1,10 @@
 use crate::any_graph::AnyGraph;
+use crate::kinship::Kinship;
 use crate::types::{Key, Value, Vertex};
 use crate::Edge;
 use std::borrow::{Borrow, BorrowMut};
-use std::collections::{HashSet, HashMap};
-use crate::kinship::Kinship;
 use std::collections::hash_map::RandomState;
+use std::collections::{HashMap, HashSet};
 
 #[derive(Clone)]
 pub struct SimpleDirectedGraph<K, V>
@@ -38,12 +38,20 @@ where
         };
     }
 
-    fn remove_vertex(&self, vertex: &Vertex<K,V>) -> Option<(Box<Self>, Vertex<K,V>, Vec<Edge<K>>)> {
+    fn remove_vertex(
+        &self,
+        vertex: &Vertex<K, V>,
+    ) -> Option<(Box<Self>, Vertex<K, V>, Vec<Edge<K>>)> {
         let mut new_graph = self.clone();
         return if let Some(removed_vertex) = self.vertices.get(&vertex) {
             if new_graph.vertices.remove(removed_vertex) {
-                let (new_graph, removed_edges) = new_graph.remove_all_edges_where_vertex(removed_vertex);
-                Some((Box::new(new_graph), *removed_vertex, removed_edges))
+                if let Some((new_graph, removed_edges)) =
+                    new_graph.remove_all_edges_where_vertex(removed_vertex)
+                {
+                    Some((new_graph, *removed_vertex, removed_edges))
+                } else {
+                    None
+                }
             } else {
                 None
             }
@@ -54,7 +62,7 @@ where
 
     fn remove_vertex_where_key(&self, key: K) -> Option<(Box<Self>, Vertex<K, V>, Vec<Edge<K>>)> {
         let vertex: Vertex<K, V> = Vertex::new(key);
-        self.remove_vertex(vertex)
+        self.remove_vertex(&vertex)
     }
 
     fn add_edge(&self, edge: Edge<K>) -> Option<Box<Self>> {
@@ -76,7 +84,7 @@ where
         self.add_edge(Edge::new(key_from, key_to))
     }
 
-    fn remove_edge(&self, edge: &Edge<K>)->Option<(Box<Self>, Edge<K>)> {
+    fn remove_edge(&self, edge: &Edge<K>) -> Option<(Box<Self>, Edge<K>)> {
         unimplemented!()
     }
 
@@ -85,8 +93,11 @@ where
         self.remove_edge(&edge)
     }
 
-    fn remove_all_edges_where_vertex(&self, vertex: &Vertex<K, V>)->Option(Box<Self>, Vec<Edge<K>>) {
-        let new_graph = self.clone();
+    fn remove_all_edges_where_vertex(
+        &self,
+        vertex: &Vertex<K, V>,
+    ) -> Option<(Box<Self>, Vec<Edge<K>>)> {
+        let mut new_graph = self.clone();
         let removed_edges: Vec<Edge<K>> = new_graph
             .edges
             .iter()
@@ -108,7 +119,11 @@ where
     }
 }
 
-impl <K,V> Kinship<K,V> for SimpleDirectedGraph<K,V> {
+impl<K, V> Kinship<K, V> for SimpleDirectedGraph<K, V>
+where
+    K: Key,
+    V: Value,
+{
     fn successors(&self) -> HashMap<Vertex<K, V>, Edge<K>, RandomState> {
         unimplemented!()
     }
