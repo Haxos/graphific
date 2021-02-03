@@ -2,7 +2,7 @@ use crate::any_graph::AnyGraph;
 use crate::kinship::Kinship;
 use crate::types::{Key, Value, Vertex};
 use crate::Edge;
-use std::borrow::{Borrow, BorrowMut};
+use std::borrow::BorrowMut;
 use std::collections::hash_map::RandomState;
 use std::collections::{HashMap, HashSet};
 
@@ -85,7 +85,16 @@ where
     }
 
     fn remove_edge(&self, edge: &Edge<K>) -> Option<(Box<Self>, Edge<K>)> {
-        unimplemented!()
+        let mut new_graph = self.clone();
+        return if let Some(removed_edge) = self.edges.get(edge) {
+            if new_graph.edges.remove(removed_edge) {
+                Some((Box::new(new_graph), *removed_edge))
+            } else {
+                None
+            }
+        } else {
+            None
+        };
     }
 
     fn remove_edge_where_keys(&self, key_from: K, key_to: K) -> Option<(Box<Self>, Edge<K>)> {
