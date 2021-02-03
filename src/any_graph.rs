@@ -20,7 +20,10 @@ where
     /// Add a new vertex then return the graph.
     fn add_vertex(&self, vertex: Vertex<K, V>) -> Option<Box<Self>>;
 
-    /// Remove a vertex by its key then return the given vertex and its edges if it exists.
+    /// Remove a vertex then return the new graph, the deleted vertex and its edges.
+    fn remove_vertex(&self, vertex: &Vertex<K,V>) -> Option<(Box<Self>, Vertex<K,V>, Vec<Edge<K>>)>;
+
+    /// Remove a vertex by its key then return the new graph, the deleted vertex and its edges.
     fn remove_vertex_where_key(&self, key: K) -> Option<(Box<Self>, Vertex<K, V>, Vec<Edge<K>>)>;
 
     /// Add a new edge then return the new graph.
@@ -29,8 +32,14 @@ where
     /// Add a new edge between 2 keys then return the new graph.
     fn add_edge_between_keys(&self, key_from: K, key_to: K) -> Option<Box<Self>>;
 
-    /// Remove an existing edge by their keys, then return the new graph and the deleted edge
+    /// Remove an existing edge then return the new graph and the deleted edge.
+    fn remove_edge(&self, edge: &Edge<K>)->Option<(Box<Self>, Edge<K>)>;
+
+    /// Remove an existing edge by their keys, then return the new graph and the deleted edge.
     fn remove_edge_where_keys(&self, key_from: K, key_to: K) -> Option<(Box<Self>, Edge<K>)>;
+
+    /// Remove all existing edges from a given vertex, then return the new graph and the deleted edges.
+    fn remove_all_edges_where_vertex(&self, vertex: &Vertex<K, V>)->Option(Box<Self>, Vec<Edge<K>>);
 
     /// Remove all existing edges from a given key, then return the new graph and the deleted edges.
     fn remove_all_edges_where_key(&self, key_from: K) -> Option<(Box<Self>, Vec<Edge<K>>)>;
