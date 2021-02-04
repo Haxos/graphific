@@ -9,8 +9,8 @@ where
     V: Value,
 {
     /// Get the successors of each vertex.
-    fn successors(&self) -> HashMap<Vertex<K, V>, Edge<K>>;
+    fn successors(&self) -> HashMap<Vertex<K, V>, Vec<Edge<K>>>;
 
     /// Get the predecessors of each vertex.
-    fn predecessors(&self) -> HashMap<Vertex<K, V>, Edge<K>>;
+    fn predecessors(&self) -> HashMap<Vertex<K, V>, Vec<Edge<K>>>;
 }

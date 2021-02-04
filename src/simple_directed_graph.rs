@@ -133,12 +133,30 @@ where
     K: Key,
     V: Value,
 {
-    fn successors(&self) -> HashMap<Vertex<K, V>, Edge<K>, RandomState> {
-        unimplemented!()
+    fn successors(&self) -> HashMap<Vertex<K, V>, Vec<Edge<K>>, RandomState> {
+        self.edges.iter().fold(HashMap::new(), |mut acc, edge| {
+            let tmp_vertex = Vertex::new(edge.from().clone());
+            let vertex = self.vertices.get(&tmp_vertex).unwrap().clone();
+            if let Some(vector) = acc.get_mut(&vertex) {
+                vector.push(edge.clone());
+            } else {
+                acc.insert(vertex, vec![edge.clone()]);
+            }
+            acc
+        })
     }
 
-    fn predecessors(&self) -> HashMap<Vertex<K, V>, Edge<K>, RandomState> {
-        unimplemented!()
+    fn predecessors(&self) -> HashMap<Vertex<K, V>, Vec<Edge<K>>, RandomState> {
+        self.edges.iter().fold(HashMap::new(), |mut acc, edge| {
+            let tmp_vertex = Vertex::new(edge.to().clone());
+            let vertex = self.vertices.get(&tmp_vertex).unwrap().clone();
+            if let Some(vector) = acc.get_mut(&vertex) {
+                vector.push(edge.clone());
+            } else {
+                acc.insert(vertex, vec![edge.clone()]);
+            }
+            acc
+        })
     }
 }
 
