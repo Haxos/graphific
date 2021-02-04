@@ -7,7 +7,7 @@ use std::collections::hash_map::RandomState;
 use std::collections::{HashMap, HashSet};
 
 #[derive(Clone)]
-pub struct SimpleDirectedGraph<K, V>
+pub struct BasicDirectedGraph<K, V>
 where
     K: Key,
     V: Value,
@@ -16,7 +16,7 @@ where
     edges: HashSet<Edge<K>>,
 }
 
-impl<K, V> AnyGraph<K, V> for SimpleDirectedGraph<K, V>
+impl<K, V> AnyGraph<K, V> for BasicDirectedGraph<K, V>
 where
     K: Key,
     V: Value,
@@ -128,7 +128,7 @@ where
     }
 }
 
-impl<K, V> Kinship<K, V> for SimpleDirectedGraph<K, V>
+impl<K, V> Kinship<K, V> for BasicDirectedGraph<K, V>
 where
     K: Key,
     V: Value,
@@ -160,13 +160,13 @@ where
     }
 }
 
-impl<K, V> SimpleDirectedGraph<K, V>
+impl<K, V> BasicDirectedGraph<K, V>
 where
     K: Key,
     V: Value,
 {
     pub fn new() -> Self {
-        SimpleDirectedGraph {
+        BasicDirectedGraph {
             vertices: HashSet::new(),
             edges: HashSet::new(),
         }
