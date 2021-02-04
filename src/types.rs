@@ -8,7 +8,7 @@ pub trait Value: Clone + Copy + Default {}
 impl<T: Copy + Default> Value for T {}
 
 /// Structure describing a vertex with a [`Key`] and a [`Value`].
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub struct Vertex<K, V>
 where
     K: Key,
@@ -19,7 +19,7 @@ where
 }
 
 /// Structure describing an edge with an origin [`Key`] and destination [`Key`].
-#[derive(Clone, Copy, Hash, Eq, PartialEq, Ord, PartialOrd)]
+#[derive(Clone, Copy, Hash, Eq, PartialEq, Ord, PartialOrd, Debug)]
 pub struct Edge<K>
 where
     K: Key,
