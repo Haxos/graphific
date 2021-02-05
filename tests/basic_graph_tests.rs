@@ -7,7 +7,6 @@ extern crate pretty_assertions;
 #[cfg(test)]
 mod basic_directed_graph_tests {
     use graphific::{AnyGraph, BasicDirectedGraph, Edge, Vertex};
-    use std::borrow::Borrow;
 
     #[test]
     fn new_basic_directed_graph() {
@@ -26,16 +25,16 @@ mod basic_directed_graph_tests {
         assert_eq!(vertices, graph.vertices());
 
         let v1: Vertex<i32, i32> = Vertex::with_value(0, 1);
-        graph = *graph.add_vertex(v1.clone()).unwrap();
+        graph = graph.add_vertex(v1.clone()).unwrap();
         vertices.push(v1);
         assert_eq!(vertices, graph.vertices());
 
         let v2: Vertex<i32, i32> = Vertex::with_value(1, 2);
-        graph = *graph.add_vertex(v2.clone()).unwrap();
+        graph = graph.add_vertex(v2.clone()).unwrap();
         vertices.push(v2);
         assert_eq!(vertices, graph.vertices());
 
-        let v3: Vertex<i32, i32> = Vertex::with_value(1, 2);
+        let v3: Vertex<i32, i32> = Vertex::with_value(1, 3);
         let should_be_none = graph.add_vertex(v3.clone());
         assert_eq!(true, should_be_none.is_none());
     }
