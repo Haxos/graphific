@@ -1,5 +1,6 @@
 pub mod any_graph;
 pub mod basic_directed_graph;
+pub mod basic_undirected_graph;
 pub mod kinship;
 pub mod types;
 
