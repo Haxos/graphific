@@ -143,26 +143,36 @@ where
     V: Value,
 {
     fn successors(&self) -> HashMap<Vertex<K, V>, Vec<Edge<K>>, RandomState> {
-        self.edges.iter().fold(HashMap::new(), |mut acc, edge| {
+        let init_hashmap = self
+            .vertices
+            .iter()
+            .fold(HashMap::new(), |mut acc, vertex| {
+                let vec: Vec<Edge<K>> = vec![];
+                acc.insert(vertex.clone(), vec);
+                acc
+            });
+        self.edges.iter().fold(init_hashmap, |mut acc, edge| {
             let tmp_vertex = Vertex::new(edge.from().clone());
-            let vertex = self.vertices.get(&tmp_vertex).unwrap().clone();
-            if let Some(vector) = acc.get_mut(&vertex) {
+            if let Some(vector) = acc.get_mut(&tmp_vertex) {
                 vector.push(edge.clone());
-            } else {
-                acc.insert(vertex, vec![edge.clone()]);
             }
             acc
         })
     }
 
     fn predecessors(&self) -> HashMap<Vertex<K, V>, Vec<Edge<K>>, RandomState> {
-        self.edges.iter().fold(HashMap::new(), |mut acc, edge| {
+        let init_hashmap = self
+            .vertices
+            .iter()
+            .fold(HashMap::new(), |mut acc, vertex| {
+                let vec: Vec<Edge<K>> = vec![];
+                acc.insert(vertex.clone(), vec);
+                acc
+            });
+        self.edges.iter().fold(init_hashmap, |mut acc, edge| {
             let tmp_vertex = Vertex::new(edge.to().clone());
-            let vertex = self.vertices.get(&tmp_vertex).unwrap().clone();
-            if let Some(vector) = acc.get_mut(&vertex) {
+            if let Some(vector) = acc.get_mut(&tmp_vertex) {
                 vector.push(edge.clone());
-            } else {
-                acc.insert(vertex, vec![edge.clone()]);
             }
             acc
         })

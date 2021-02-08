@@ -22,6 +22,7 @@ where
 #[cfg(test)]
 mod basic_directed_graph_tests {
     use crate::assert_sorted_vec_eq;
+    use graphific::kinship::Kinship;
     use graphific::{AnyGraph, BasicDirectedGraph, Edge, Vertex};
 
     #[test]
@@ -284,12 +285,76 @@ mod basic_directed_graph_tests {
 
     #[test]
     fn successors() {
-        unimplemented!()
+        let mut graph: BasicDirectedGraph<i32, i32> = BasicDirectedGraph::new();
+        let v1: Vertex<i32, i32> = Vertex::with_value(0, 1);
+        let v2: Vertex<i32, i32> = Vertex::with_value(1, 2);
+        let v3: Vertex<i32, i32> = Vertex::with_value(2, 3);
+        let e1: Edge<i32> = Edge::new(v1.key().clone(), v2.key().clone());
+        let e2: Edge<i32> = Edge::new(v2.key().clone(), v1.key().clone());
+        let e3: Edge<i32> = Edge::new(v2.key().clone(), v2.key().clone());
+        let e4: Edge<i32> = Edge::new(v1.key().clone(), v3.key().clone());
+
+        // init
+        graph = graph.add_vertex(v1.clone()).unwrap();
+        graph = graph.add_vertex(v2.clone()).unwrap();
+        graph = graph.add_vertex(v3.clone()).unwrap();
+        graph = graph.add_edge(e1.clone()).unwrap();
+        graph = graph.add_edge(e2.clone()).unwrap();
+        graph = graph.add_edge(e3.clone()).unwrap();
+        graph = graph.add_edge(e4.clone()).unwrap();
+
+        let expected_vertices = vec![v1.clone(), v2.clone(), v3.clone()];
+        assert_sorted_vec_eq(&expected_vertices, &graph.vertices());
+        let expected_edges = vec![e1.clone(), e2.clone(), e3.clone(), e4.clone()];
+        assert_sorted_vec_eq(&expected_edges, &graph.edges());
+
+        let successors = graph.successors();
+
+        // tests all vertices and its corresponding edges
+        let expected_edges_v1 = vec![e1.clone(), e4.clone()];
+        let expected_edges_v2 = vec![e2.clone(), e3.clone()];
+        let expected_edges_v3 = vec![];
+
+        assert_sorted_vec_eq(&expected_edges_v1, &successors.get(&v1).unwrap());
+        assert_sorted_vec_eq(&expected_edges_v2, &successors.get(&v2).unwrap());
+        assert_sorted_vec_eq(&expected_edges_v3, &successors.get(&v3).unwrap());
     }
 
     #[test]
     fn predecessors() {
-        unimplemented!()
+        let mut graph: BasicDirectedGraph<i32, i32> = BasicDirectedGraph::new();
+        let v1: Vertex<i32, i32> = Vertex::with_value(0, 1);
+        let v2: Vertex<i32, i32> = Vertex::with_value(1, 2);
+        let v3: Vertex<i32, i32> = Vertex::with_value(2, 3);
+        let e1: Edge<i32> = Edge::new(v1.key().clone(), v2.key().clone());
+        let e2: Edge<i32> = Edge::new(v2.key().clone(), v1.key().clone());
+        let e3: Edge<i32> = Edge::new(v2.key().clone(), v2.key().clone());
+        let e4: Edge<i32> = Edge::new(v1.key().clone(), v3.key().clone());
+
+        // init
+        graph = graph.add_vertex(v1.clone()).unwrap();
+        graph = graph.add_vertex(v2.clone()).unwrap();
+        graph = graph.add_vertex(v3.clone()).unwrap();
+        graph = graph.add_edge(e1.clone()).unwrap();
+        graph = graph.add_edge(e2.clone()).unwrap();
+        graph = graph.add_edge(e3.clone()).unwrap();
+        graph = graph.add_edge(e4.clone()).unwrap();
+
+        let expected_vertices = vec![v1.clone(), v2.clone(), v3.clone()];
+        assert_sorted_vec_eq(&expected_vertices, &graph.vertices());
+        let expected_edges = vec![e1.clone(), e2.clone(), e3.clone(), e4.clone()];
+        assert_sorted_vec_eq(&expected_edges, &graph.edges());
+
+        let predecessors = graph.predecessors();
+
+        // tests all vertices and its corresponding edges
+        let expected_edges_v1 = vec![e2.clone()];
+        let expected_edges_v2 = vec![e1.clone(), e3.clone()];
+        let expected_edges_v3 = vec![e4.clone()];
+
+        assert_sorted_vec_eq(&expected_edges_v1, &predecessors.get(&v1).unwrap());
+        assert_sorted_vec_eq(&expected_edges_v2, &predecessors.get(&v2).unwrap());
+        assert_sorted_vec_eq(&expected_edges_v3, &predecessors.get(&v3).unwrap());
     }
 }
 
