@@ -22,8 +22,7 @@ where
 #[cfg(test)]
 mod basic_directed_graph_tests {
     use crate::assert_sorted_vec_eq;
-    use graphific::kinship::Kinship;
-    use graphific::{AnyGraph, BasicDirectedGraph, Edge, Vertex};
+    use graphific::{AnyGraph, BasicDirectedGraph, Edge, Kinship, Vertex};
 
     #[test]
     fn new_basic_directed_graph() {
@@ -361,9 +360,7 @@ mod basic_directed_graph_tests {
 #[cfg(test)]
 mod basic_undirected_graph_tests {
     use crate::assert_sorted_vec_eq;
-    use graphific::basic_undirected_graph::BasicUndirectedGraph;
-    use graphific::kinship::Kinship;
-    use graphific::{AnyGraph, Edge, Vertex};
+    use graphific::{AnyGraph, BasicUndirectedGraph, Edge, Kinship, Vertex};
 
     #[test]
     fn new_basic_directed_graph() {
