@@ -55,6 +55,14 @@ where
         };
     }
 
+    fn remove_all_vertices(&self) -> Option<(Self, Vec<Vertex<K, V>>, Vec<Edge<K>>)> {
+        let new_graph = BasicUndirectedGraph::new();
+        let vertices = self.vertices();
+        let edges = self.edges();
+
+        Some((new_graph, vertices, edges))
+    }
+
     fn remove_vertex_where_key(&self, key: K) -> Option<(Self, Vertex<K, V>, Vec<Edge<K>>)> {
         let vertex: Vertex<K, V> = Vertex::new(key);
         self.remove_vertex(&vertex)
@@ -95,6 +103,16 @@ where
     fn remove_edge_where_keys(&self, key_from: K, key_to: K) -> Option<(Self, Edge<K>)> {
         let edge = Edge::new(key_from, key_to);
         self.remove_edge(&edge)
+    }
+
+    fn remove_all_edges(&self) -> Option<(Self, Vec<Edge<K>>)> {
+        let new_graph = BasicUndirectedGraph {
+            vertices: self.vertices.clone(),
+            edges: HashSet::new(),
+        };
+        let edges = self.edges();
+
+        Some((new_graph, edges))
     }
 
     fn remove_all_edges_where_vertex(&self, vertex: &Vertex<K, V>) -> Option<(Self, Vec<Edge<K>>)> {

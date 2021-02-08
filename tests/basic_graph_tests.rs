@@ -100,6 +100,11 @@ mod basic_directed_graph_tests {
     }
 
     #[test]
+    fn remove_all_vertices() {
+        unimplemented!()
+    }
+
+    #[test]
     fn add_edge() {
         let mut graph: BasicDirectedGraph<i32, i32> = BasicDirectedGraph::new();
         let v1: Vertex<i32, i32> = Vertex::with_value(1, 1);
@@ -172,6 +177,11 @@ mod basic_directed_graph_tests {
 
     #[test]
     fn remove_all_edges() {
+        unimplemented!()
+    }
+
+    #[test]
+    fn remove_all_edges_where_vertex() {
         let mut graph: BasicDirectedGraph<i32, i32> = BasicDirectedGraph::new();
         let v1: Vertex<i32, i32> = Vertex::with_value(1, 1);
         let v2: Vertex<i32, i32> = Vertex::with_value(2, 4);
@@ -438,6 +448,11 @@ mod basic_undirected_graph_tests {
     }
 
     #[test]
+    fn remove_all_vertices() {
+        unimplemented!()
+    }
+
+    #[test]
     fn add_edge() {
         let mut graph: BasicUndirectedGraph<i32, i32> = BasicUndirectedGraph::new();
         let v1: Vertex<i32, i32> = Vertex::with_value(1, 1);
@@ -510,6 +525,11 @@ mod basic_undirected_graph_tests {
 
     #[test]
     fn remove_all_edges() {
+        unimplemented!()
+    }
+
+    #[test]
+    fn remove_all_edges_where_vertex() {
         let mut graph: BasicUndirectedGraph<i32, i32> = BasicUndirectedGraph::new();
         let v1: Vertex<i32, i32> = Vertex::with_value(1, 1);
         let v2: Vertex<i32, i32> = Vertex::with_value(2, 4);
