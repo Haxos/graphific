@@ -1,3 +1,4 @@
+mod algo;
 mod any_graph;
 mod basic_directed_graph;
 mod basic_undirected_graph;
