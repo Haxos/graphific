@@ -227,6 +227,62 @@ mod basic_directed_graph_tests {
     }
 
     #[test]
+    fn remove_all_edges_from() {
+        let mut graph: BasicDirectedGraph<i32, i32> = BasicDirectedGraph::new();
+        let v1: Vertex<i32, i32> = Vertex::with_value(0, 1);
+        let v2: Vertex<i32, i32> = Vertex::with_value(1, 2);
+        let v3: Vertex<i32, i32> = Vertex::with_value(2, 3);
+        let v4: Vertex<i32, i32> = Vertex::with_value(-1, 4);
+        let e1: Edge<i32> = Edge::new(v1.key().clone(), v2.key().clone());
+        let e2: Edge<i32> = Edge::new(v2.key().clone(), v1.key().clone());
+        let e3: Edge<i32> = Edge::new(v2.key().clone(), v2.key().clone());
+        let e4: Edge<i32> = Edge::new(v1.key().clone(), v3.key().clone());
+
+        // init
+        let expected_vertices = vec![v1.clone(), v2.clone(), v3.clone()];
+        graph = graph.add_vertex(v1.clone()).unwrap();
+        graph = graph.add_vertex(v2.clone()).unwrap();
+        graph = graph.add_vertex(v3.clone()).unwrap();
+        graph = graph.add_edge(e1.clone()).unwrap();
+        graph = graph.add_edge(e2.clone()).unwrap();
+        graph = graph.add_edge(e3.clone()).unwrap();
+        graph = graph.add_edge(e4.clone()).unwrap();
+
+        let expected_edges = vec![e1.clone(), e2.clone(), e3.clone(), e4.clone()];
+        assert_sorted_vec_eq(&expected_edges, &graph.edges());
+
+        // remove all from v1
+        let (graph, removed_edges) = graph.remove_all_edges_from_vertex(&v1).unwrap();
+        let expected_removed_edges = vec![e1.clone(), e4.clone()];
+        let expected_remaining_edges = vec![e2.clone(), e3.clone()];
+        assert_sorted_vec_eq(&expected_removed_edges, &removed_edges);
+        assert_sorted_vec_eq(&expected_remaining_edges, &graph.edges());
+        assert_sorted_vec_eq(&expected_vertices, &graph.vertices());
+
+        // try to remove v4 but fail because v4 doesn't exists in graph
+        let should_be_none = graph.remove_all_edges_from_vertex(&v4);
+        assert_eq!(true, should_be_none.is_none());
+        assert_sorted_vec_eq(&expected_remaining_edges, &graph.edges());
+        assert_sorted_vec_eq(&expected_vertices, &graph.vertices());
+
+        // remove all from v3
+        let (graph, removed_edges) = graph.remove_all_edges_from_vertex(&v3).unwrap();
+        let expected_removed_edges = vec![];
+        let expected_remaining_edges = vec![e2.clone(), e3.clone()];
+        assert_sorted_vec_eq(&expected_removed_edges, &removed_edges);
+        assert_sorted_vec_eq(&expected_remaining_edges, &graph.edges());
+        assert_sorted_vec_eq(&expected_vertices, &graph.vertices());
+
+        // remove all from v2
+        let (graph, removed_edges) = graph.remove_all_edges_from_vertex(&v2).unwrap();
+        let expected_removed_edges = vec![e2.clone(), e3.clone()];
+        let expected_remaining_edges = vec![];
+        assert_sorted_vec_eq(&expected_removed_edges, &removed_edges);
+        assert_sorted_vec_eq(&expected_remaining_edges, &graph.edges());
+        assert_sorted_vec_eq(&expected_vertices, &graph.vertices());
+    }
+
+    #[test]
     fn successors() {
         unimplemented!()
     }

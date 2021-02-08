@@ -110,6 +110,31 @@ where
         let vertex = Vertex::new(key_from);
         self.remove_all_edges_where_vertex(&vertex)
     }
+
+    fn remove_all_edges_from_vertex(&self, vertex: &Vertex<K, V>) -> Option<(Self, Vec<Edge<K>>)> {
+        if !self.vertices.contains(vertex) {
+            return None;
+        }
+        let mut new_graph = self.clone();
+        let removed_edges: Vec<Edge<K>> = new_graph
+            .edges
+            .iter()
+            .cloned()
+            .filter(|edge| edge.from().eq(vertex.key()))
+            .collect();
+        new_graph.edges = new_graph
+            .edges
+            .into_iter()
+            .filter(|edge| !(edge.from().eq(vertex.key())))
+            .collect();
+
+        Some((new_graph, removed_edges))
+    }
+
+    fn remove_all_edges_from_key(&self, key_from: K) -> Option<(Self, Vec<Edge<K>>)> {
+        let vertex = Vertex::new(key_from);
+        self.remove_all_edges_from_vertex(&vertex)
+    }
 }
 
 impl<K, V> Kinship<K, V> for BasicDirectedGraph<K, V>
