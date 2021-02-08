@@ -38,9 +38,9 @@ where
     /// Remove an existing edge by their keys, then return the new graph and the deleted edge.
     fn remove_edge_where_keys(&self, key_from: K, key_to: K) -> Option<(Self, Edge<K>)>;
 
-    /// Remove all existing edges from a given vertex, then return the new graph and the deleted edges.
+    /// Remove all existing edges from or to a given vertex, then return the new graph and the deleted edges.
     fn remove_all_edges_where_vertex(&self, vertex: &Vertex<K, V>) -> Option<(Self, Vec<Edge<K>>)>;
 
-    /// Remove all existing edges from a given key, then return the new graph and the deleted edges.
+    /// Remove all existing edges from or to a given key, then return the new graph and the deleted edges.
     fn remove_all_edges_where_key(&self, key_from: K) -> Option<(Self, Vec<Edge<K>>)>;
 }

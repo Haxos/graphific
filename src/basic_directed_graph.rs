@@ -43,7 +43,7 @@ where
         return if let Some(removed_vertex) = self.vertices.get(&vertex) {
             if new_graph.vertices.remove(removed_vertex) {
                 if let Some((new_graph, removed_edges)) =
-                    new_graph.remove_all_edges_where_vertex(removed_vertex)
+                    new_graph.internal_remove_all_edges_where_vertex(removed_vertex)
                 {
                     Some((new_graph, *removed_vertex, removed_edges))
                 } else {
@@ -100,20 +100,10 @@ where
     }
 
     fn remove_all_edges_where_vertex(&self, vertex: &Vertex<K, V>) -> Option<(Self, Vec<Edge<K>>)> {
-        let mut new_graph = self.clone();
-        let removed_edges: Vec<Edge<K>> = new_graph
-            .edges
-            .iter()
-            .cloned()
-            .filter(|edge| edge.from().eq(vertex.key()) || edge.to().eq(vertex.key()))
-            .collect();
-        new_graph.edges = new_graph
-            .edges
-            .into_iter()
-            .filter(|edge| !(edge.from().eq(vertex.key()) || edge.to().eq(vertex.key())))
-            .collect();
-
-        Some((new_graph, removed_edges))
+        if !self.vertices.contains(vertex) {
+            return None;
+        }
+        self.internal_remove_all_edges_where_vertex(vertex)
     }
 
     fn remove_all_edges_where_key(&self, key_from: K) -> Option<(Self, Vec<Edge<K>>)> {
@@ -164,5 +154,25 @@ where
             vertices: HashSet::new(),
             edges: HashSet::new(),
         }
+    }
+
+    fn internal_remove_all_edges_where_vertex(
+        &self,
+        vertex: &Vertex<K, V>,
+    ) -> Option<(Self, Vec<Edge<K>>)> {
+        let mut new_graph = self.clone();
+        let removed_edges: Vec<Edge<K>> = new_graph
+            .edges
+            .iter()
+            .cloned()
+            .filter(|edge| edge.from().eq(vertex.key()) || edge.to().eq(vertex.key()))
+            .collect();
+        new_graph.edges = new_graph
+            .edges
+            .into_iter()
+            .filter(|edge| !(edge.from().eq(vertex.key()) || edge.to().eq(vertex.key())))
+            .collect();
+
+        Some((new_graph, removed_edges))
     }
 }
