@@ -1,3 +1,4 @@
+use crate::algo::Algorithms;
 use crate::any_graph::AnyGraph;
 use crate::kinship::Kinship;
 use crate::types::{Key, Value, Vertex};
@@ -195,6 +196,13 @@ where
             acc
         })
     }
+}
+
+impl<K, V> Algorithms<K, V> for BasicDirectedGraph<K, V>
+where
+    K: Key,
+    V: Value,
+{
 }
 
 impl<K, V> BasicDirectedGraph<K, V>

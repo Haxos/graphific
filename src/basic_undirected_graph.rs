@@ -1,3 +1,4 @@
+use crate::algo::Algorithms;
 use crate::kinship::Kinship;
 use crate::{AnyGraph, Edge, Key, Value, Vertex};
 use std::borrow::BorrowMut;
@@ -169,6 +170,13 @@ where
     fn predecessors(&self) -> HashMap<Vertex<K, V>, Vec<Edge<K>>, RandomState> {
         self.successors()
     }
+}
+
+impl<K, V> Algorithms<K, V> for BasicUndirectedGraph<K, V>
+where
+    K: Key,
+    V: Value,
+{
 }
 
 impl<K, V> BasicUndirectedGraph<K, V>

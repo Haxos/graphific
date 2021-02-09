@@ -5,6 +5,8 @@ mod basic_undirected_graph;
 mod kinship;
 mod types;
 
+pub use self::algo::Algorithms;
+
 pub use self::any_graph::AnyGraph;
 
 pub use self::kinship::Kinship;

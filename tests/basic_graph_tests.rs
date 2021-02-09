@@ -350,6 +350,11 @@ mod basic_directed_graph_tests {
         assert_sorted_vec_eq(&expected_edges_v2, &predecessors.get(&v2).unwrap());
         assert_sorted_vec_eq(&expected_edges_v3, &predecessors.get(&v3).unwrap());
     }
+
+    #[test]
+    fn eq() {
+        unimplemented!()
+    }
 }
 
 #[cfg(test)]
@@ -697,5 +702,10 @@ mod basic_undirected_graph_tests {
         assert_sorted_vec_eq(&expected_edges_v1, &predecessors.get(&v1).unwrap());
         assert_sorted_vec_eq(&expected_edges_v2, &predecessors.get(&v2).unwrap());
         assert_sorted_vec_eq(&expected_edges_v3, &predecessors.get(&v3).unwrap());
+    }
+
+    #[test]
+    fn eq() {
+        unimplemented!()
     }
 }
