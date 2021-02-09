@@ -57,7 +57,6 @@ mod algo_tests {
         let bdg: BasicDirectedGraph<i32, i32> = init_bdg();
         let bug: BasicUndirectedGraph<i32, i32> = init_bug();
 
-        let first = bdg.vertices().first().unwrap();
         let expected_dg = bdg
             .bfs_with_starting_vertex(bdg.vertices().first().unwrap())
             .unwrap();
