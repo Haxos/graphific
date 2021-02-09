@@ -6,7 +6,7 @@ use std::borrow::BorrowMut;
 use std::collections::hash_map::RandomState;
 use std::collections::{HashMap, HashSet};
 
-#[derive(Clone)]
+#[derive(Clone, PartialEq)]
 pub struct BasicDirectedGraph<K, V>
 where
     K: Key,

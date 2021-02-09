@@ -2,7 +2,7 @@ use crate::{AnyGraph, Edge, Key, Value, Vertex};
 
 use std::collections::HashMap;
 
-/// An interface for getting the successors and predecessors of each [`Vertex`]
+/// An interface for getting the successors and predecessors of each [`Vertex`].
 pub trait Kinship<K, V>: AnyGraph<K, V>
 where
     K: Key,

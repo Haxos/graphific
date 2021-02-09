@@ -6,7 +6,7 @@ use crate::Edge;
 /// # Generic implementations
 /// K describe a type of [`Key`] to use.
 /// V describe a type of [`Value`] to store.
-pub trait AnyGraph<K, V>: Sized + Clone
+pub trait AnyGraph<K, V>: Sized + Clone + PartialEq
 where
     K: Key,
     V: Value,

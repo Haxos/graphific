@@ -4,8 +4,8 @@ use std::hash::{Hash, Hasher};
 pub trait Key: Clone + Copy + PartialEq + Eq + PartialOrd + Ord + Hash {}
 impl<T: Copy + Hash + Ord> Key for T {}
 
-pub trait Value: Clone + Copy + Default {}
-impl<T: Copy + Default> Value for T {}
+pub trait Value: Clone + Copy + Default + PartialEq {}
+impl<T: Copy + Default + PartialEq> Value for T {}
 
 /// Structure describing a vertex with a [`Key`] and a [`Value`].
 #[derive(Clone, Copy, Debug)]
