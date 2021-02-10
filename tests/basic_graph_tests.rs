@@ -370,22 +370,29 @@ mod basic_directed_graph_tests {
         let e4: Edge<i32> = Edge::new(v1.key().clone(), v3.key().clone());
 
         // init
-        graph = graph.add_vertex(v1.clone()).unwrap();
-        graph = graph.add_vertex(v2.clone()).unwrap();
-        graph = graph.add_vertex(v3.clone()).unwrap();
-        graph = graph.add_edge(e1.clone()).unwrap();
-        graph = graph.add_edge(e2.clone()).unwrap();
-        graph = graph.add_edge(e3.clone()).unwrap();
-        graph = graph.add_edge(e4.clone()).unwrap();
+        graph = graph
+            .add_vertex(v1.clone())
+            .unwrap()
+            .add_vertex(v2.clone())
+            .unwrap()
+            .add_vertex(v3.clone())
+            .unwrap()
+            .add_edge(e1.clone())
+            .unwrap()
+            .add_edge(e2.clone())
+            .unwrap()
+            .add_edge(e3.clone())
+            .unwrap()
+            .add_edge(e4.clone())
+            .unwrap();
 
         let expected_vertices = vec![v1.clone(), v2.clone(), v3.clone()];
         assert_sorted_vec_eq(&expected_vertices, &graph.vertices());
         let expected_edges = vec![e1.clone(), e2.clone(), e3.clone(), e4.clone()];
         assert_sorted_vec_eq(&expected_edges, &graph.edges());
 
-        let successors = graph.successors();
-
         // tests all vertices and its corresponding edges
+        let successors = graph.successors();
         let expected_edges_v1 = vec![e1.clone(), e4.clone()];
         let expected_edges_v2 = vec![e2.clone(), e3.clone()];
         let expected_edges_v3 = vec![];
@@ -393,6 +400,13 @@ mod basic_directed_graph_tests {
         assert_sorted_vec_eq(&expected_edges_v1, &successors.get(&v1).unwrap());
         assert_sorted_vec_eq(&expected_edges_v2, &successors.get(&v2).unwrap());
         assert_sorted_vec_eq(&expected_edges_v3, &successors.get(&v3).unwrap());
+
+        // tests all keys and its corresponding edges
+        let successors = graph.successors_as_key_and_edges();
+
+        assert_sorted_vec_eq(&expected_edges_v1, &successors.get(v1.key()).unwrap());
+        assert_sorted_vec_eq(&expected_edges_v2, &successors.get(v2.key()).unwrap());
+        assert_sorted_vec_eq(&expected_edges_v3, &successors.get(v3.key()).unwrap());
     }
 
     #[test]
@@ -430,6 +444,13 @@ mod basic_directed_graph_tests {
         assert_sorted_vec_eq(&expected_edges_v1, &predecessors.get(&v1).unwrap());
         assert_sorted_vec_eq(&expected_edges_v2, &predecessors.get(&v2).unwrap());
         assert_sorted_vec_eq(&expected_edges_v3, &predecessors.get(&v3).unwrap());
+
+        // tests all keys and its corresponding edges
+        let predecessors = graph.predecessors_as_key_and_edges();
+
+        assert_sorted_vec_eq(&expected_edges_v1, &predecessors.get(v1.key()).unwrap());
+        assert_sorted_vec_eq(&expected_edges_v2, &predecessors.get(v2.key()).unwrap());
+        assert_sorted_vec_eq(&expected_edges_v3, &predecessors.get(v3.key()).unwrap());
     }
 
     #[test]
@@ -875,6 +896,13 @@ mod basic_undirected_graph_tests {
         assert_sorted_vec_eq(&expected_edges_v1, &successors.get(&v1).unwrap());
         assert_sorted_vec_eq(&expected_edges_v2, &successors.get(&v2).unwrap());
         assert_sorted_vec_eq(&expected_edges_v3, &successors.get(&v3).unwrap());
+
+        // tests all keys and its corresponding edges
+        let successors = graph.successors_as_key_and_edges();
+
+        assert_sorted_vec_eq(&expected_edges_v1, &successors.get(v1.key()).unwrap());
+        assert_sorted_vec_eq(&expected_edges_v2, &successors.get(v2.key()).unwrap());
+        assert_sorted_vec_eq(&expected_edges_v3, &successors.get(v3.key()).unwrap());
     }
 
     #[test]
@@ -912,6 +940,13 @@ mod basic_undirected_graph_tests {
         assert_sorted_vec_eq(&expected_edges_v1, &predecessors.get(&v1).unwrap());
         assert_sorted_vec_eq(&expected_edges_v2, &predecessors.get(&v2).unwrap());
         assert_sorted_vec_eq(&expected_edges_v3, &predecessors.get(&v3).unwrap());
+
+        // tests all keys and its corresponding edges
+        let predecessors = graph.predecessors_as_key_and_edges();
+
+        assert_sorted_vec_eq(&expected_edges_v1, &predecessors.get(v1.key()).unwrap());
+        assert_sorted_vec_eq(&expected_edges_v2, &predecessors.get(v2.key()).unwrap());
+        assert_sorted_vec_eq(&expected_edges_v3, &predecessors.get(v3.key()).unwrap());
     }
 
     #[test]

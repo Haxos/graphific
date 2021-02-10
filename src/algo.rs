@@ -19,12 +19,12 @@ where
         if !self.vertices().contains(starting_vertex) {
             return None;
         }
-        let new_graph = self.clone();
+        let cloned_graph = self.clone();
         let mut queue: VecDeque<K> = VecDeque::new();
         queue.push_back(starting_vertex.key().clone());
 
-        return if let Some((mut new_graph, _)) = new_graph.remove_all_edges() {
-            let successors = new_graph.successors_as_key_and_edges();
+        return if let Some((mut new_graph, _)) = cloned_graph.remove_all_edges() {
+            let successors = cloned_graph.successors_as_key_and_edges();
             let mut flagged: HashSet<K> = HashSet::new();
 
             flagged.insert(starting_vertex.key().clone());
@@ -60,12 +60,12 @@ where
         if !self.vertices().contains(starting_vertex) {
             return None;
         }
-        let new_graph = self.clone();
+        let cloned_graph = self.clone();
         let mut stack: VecDeque<K> = VecDeque::new();
         stack.push_back(starting_vertex.key().clone());
 
-        return if let Some((mut new_graph, _)) = new_graph.remove_all_edges() {
-            let successors = new_graph.successors_as_key_and_edges();
+        return if let Some((mut new_graph, _)) = cloned_graph.remove_all_edges() {
+            let successors = cloned_graph.successors_as_key_and_edges();
             let mut flagged: HashSet<K> = HashSet::new();
 
             flagged.insert(starting_vertex.key().clone());
