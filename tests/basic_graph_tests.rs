@@ -434,7 +434,55 @@ mod basic_directed_graph_tests {
 
     #[test]
     fn eq() {
-        unimplemented!()
+        let mut graph1: BasicDirectedGraph<i32, i32> = BasicDirectedGraph::new();
+        let mut graph2: BasicDirectedGraph<i32, i32> = BasicDirectedGraph::new();
+        let v1: Vertex<i32, i32> = Vertex::with_value(1, 1);
+        let v2: Vertex<i32, i32> = Vertex::with_value(2, 4);
+        let v3: Vertex<i32, i32> = Vertex::with_value(3, 9);
+        let e1: Edge<i32> = Edge::new(v1.key().clone(), v2.key().clone());
+        let e2: Edge<i32> = Edge::new(v2.key().clone(), v1.key().clone());
+        let e3: Edge<i32> = Edge::new(v2.key().clone(), v2.key().clone());
+        let e4: Edge<i32> = Edge::new(v1.key().clone(), v3.key().clone());
+
+        // init
+        graph1 = graph1
+            .add_vertex(v1.clone())
+            .unwrap()
+            .add_vertex(v2.clone())
+            .unwrap()
+            .add_vertex(v3.clone())
+            .unwrap()
+            .add_edge(e1.clone())
+            .unwrap()
+            .add_edge(e2.clone())
+            .unwrap()
+            .add_edge(e3.clone())
+            .unwrap()
+            .add_edge(e4.clone())
+            .unwrap();
+
+        graph2 = graph2
+            .add_vertex(v1.clone())
+            .unwrap()
+            .add_vertex(v2.clone())
+            .unwrap()
+            .add_edge(e1.clone())
+            .unwrap()
+            .add_edge(e2.clone())
+            .unwrap()
+            .add_edge(e3.clone())
+            .unwrap();
+
+        assert_eq!(false, graph1.eq(&graph2));
+        assert_eq!(true, graph1.ne(&graph2));
+
+        graph2 = graph2.add_vertex(v3.clone()).unwrap();
+        assert_eq!(false, graph1.eq(&graph2));
+        assert_eq!(true, graph1.ne(&graph2));
+
+        graph2 = graph2.add_edge(e4.clone()).unwrap();
+        assert_eq!(true, graph1.eq(&graph2));
+        assert_eq!(false, graph1.ne(&graph2));
     }
 }
 
@@ -868,6 +916,54 @@ mod basic_undirected_graph_tests {
 
     #[test]
     fn eq() {
-        unimplemented!()
+        let mut graph1: BasicUndirectedGraph<i32, i32> = BasicUndirectedGraph::new();
+        let mut graph2: BasicUndirectedGraph<i32, i32> = BasicUndirectedGraph::new();
+        let v1: Vertex<i32, i32> = Vertex::with_value(1, 1);
+        let v2: Vertex<i32, i32> = Vertex::with_value(2, 4);
+        let v3: Vertex<i32, i32> = Vertex::with_value(3, 9);
+        let e1: Edge<i32> = Edge::new(v1.key().clone(), v2.key().clone());
+        let e2: Edge<i32> = Edge::new(v2.key().clone(), v1.key().clone());
+        let e3: Edge<i32> = Edge::new(v2.key().clone(), v2.key().clone());
+        let e4: Edge<i32> = Edge::new(v1.key().clone(), v3.key().clone());
+
+        // init
+        graph1 = graph1
+            .add_vertex(v1.clone())
+            .unwrap()
+            .add_vertex(v2.clone())
+            .unwrap()
+            .add_vertex(v3.clone())
+            .unwrap()
+            .add_edge(e1.clone())
+            .unwrap()
+            .add_edge(e2.clone())
+            .unwrap()
+            .add_edge(e3.clone())
+            .unwrap()
+            .add_edge(e4.clone())
+            .unwrap();
+
+        graph2 = graph2
+            .add_vertex(v1.clone())
+            .unwrap()
+            .add_vertex(v2.clone())
+            .unwrap()
+            .add_edge(e1.clone())
+            .unwrap()
+            .add_edge(e2.clone())
+            .unwrap()
+            .add_edge(e3.clone())
+            .unwrap();
+
+        assert_eq!(false, graph1.eq(&graph2));
+        assert_eq!(true, graph1.ne(&graph2));
+
+        graph2 = graph2.add_vertex(v3.clone()).unwrap();
+        assert_eq!(false, graph1.eq(&graph2));
+        assert_eq!(true, graph1.ne(&graph2));
+
+        graph2 = graph2.add_edge(e4.clone()).unwrap();
+        assert_eq!(true, graph1.eq(&graph2));
+        assert_eq!(false, graph1.ne(&graph2));
     }
 }
