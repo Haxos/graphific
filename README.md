@@ -1,5 +1,7 @@
 # graphific
 Graphific is a graph & network data structure library written in Rust.
+The name is a combination of graph, and the Pacific ocean because there are a lot of
+cargo routes (Cargo being the default packet manager for Rust).
 
 ## Goals of the library
 Here are the different focus point of the library by decreasing order of importance:
@@ -18,8 +20,5 @@ will not be accepted.
 
 ## Credits
 Original creator : [Adrian Mayo Cartes](https://github.com/Haxos/)
-
-## Miscellaneous
-The name is a combination of graph, and the Pacific ocean because there are a lot of
-cargo routes (Cargo being the default packet manager for Rust). Thank [Paul Reeve](https://github.com/paulreeve717)
-for the suggested name.
+Inspired by : [petgraph](https://github.com/petgraph/petgraph) and [graphlib](https://github.com/purpleprotocol/graphlib)
+Special thanks to [Paul Reeve](https://github.com/paulreeve717) for suggesting the name.
