@@ -7,6 +7,8 @@ use std::borrow::BorrowMut;
 use std::collections::hash_map::RandomState;
 use std::collections::{HashMap, HashSet};
 
+/// A basic implementation of a directed graph.
+/// It doesn't allow multiple edges but allow loops.
 #[derive(Clone, PartialEq)]
 pub struct BasicDirectedGraph<K, V>
 where
@@ -22,14 +24,20 @@ where
     K: Key,
     V: Value,
 {
+    /// Get the vertices of the graph.
+    /// Complexity: O(1*).
     fn vertices(&self) -> Vec<Vertex<K, V>> {
         self.vertices.iter().cloned().collect()
     }
 
+    /// Get the edges of the graph.
+    /// Complexity: O(1*).
     fn edges(&self) -> Vec<Edge<K>> {
         self.edges.iter().cloned().collect()
     }
 
+    /// Add a new vertex then return the graph.
+    /// Complexity: O(1*).
     fn add_vertex(&self, vertex: Vertex<K, V>) -> Option<Self> {
         let mut new_graph = self.clone();
         return if new_graph.vertices.borrow_mut().insert(vertex) {
@@ -39,6 +47,8 @@ where
         };
     }
 
+    /// Remove a vertex then return the new graph, the deleted vertex and its edges.
+    /// Complexity: O(E).
     fn remove_vertex(&self, vertex: &Vertex<K, V>) -> Option<(Self, Vertex<K, V>, Vec<Edge<K>>)> {
         let mut new_graph = self.clone();
         return if let Some(removed_vertex) = self.vertices.get(&vertex) {
@@ -58,6 +68,8 @@ where
         };
     }
 
+    /// Remove all vertices then return the new graph, the deleted vertices and all the edges.
+    /// Complexity: O(1*).
     fn remove_all_vertices(&self) -> Option<(Self, Vec<Vertex<K, V>>, Vec<Edge<K>>)> {
         let new_graph = BasicDirectedGraph::new();
         let vertices = self.vertices();
@@ -66,11 +78,15 @@ where
         Some((new_graph, vertices, edges))
     }
 
+    /// Remove a vertex by its key then return the new graph, the deleted vertex and its edges.
+    /// Complexity: O(E).
     fn remove_vertex_where_key(&self, key: K) -> Option<(Self, Vertex<K, V>, Vec<Edge<K>>)> {
         let vertex: Vertex<K, V> = Vertex::new(key);
         self.remove_vertex(&vertex)
     }
 
+    /// Add a new edge then return the new graph.
+    /// Complexity: O(1*).
     fn add_edge(&self, edge: Edge<K>) -> Option<Self> {
         let key_from: Vertex<K, V> = Vertex::new(edge.from().clone());
         let key_to: Vertex<K, V> = Vertex::new(edge.to().clone());
@@ -86,10 +102,14 @@ where
         };
     }
 
+    /// Add a new edge between 2 keys then return the new graph.
+    /// Complexity: O(1*).
     fn add_edge_between_keys(&self, key_from: K, key_to: K) -> Option<Self> {
         self.add_edge(Edge::new(key_from, key_to))
     }
 
+    /// Remove an existing edge then return the new graph and the deleted edge.
+    /// Complexity: O(1*).
     fn remove_edge(&self, edge: &Edge<K>) -> Option<(Self, Edge<K>)> {
         let mut new_graph = self.clone();
         return if let Some(removed_edge) = self.edges.get(edge) {
@@ -103,11 +123,15 @@ where
         };
     }
 
+    /// Remove an existing edge by their keys, then return the new graph and the deleted edge.
+    /// Complexity: O(1*).
     fn remove_edge_where_keys(&self, key_from: K, key_to: K) -> Option<(Self, Edge<K>)> {
         let edge = Edge::new(key_from, key_to);
         self.remove_edge(&edge)
     }
 
+    /// Remove all the edges then return the new graph and all the deleted edges.
+    /// Complexity: O(1*).
     fn remove_all_edges(&self) -> Option<(Self, Vec<Edge<K>>)> {
         let new_graph = BasicDirectedGraph {
             vertices: self.vertices.clone(),
@@ -118,6 +142,8 @@ where
         Some((new_graph, edges))
     }
 
+    /// Remove all existing edges from or to a given vertex, then return the new graph and the deleted edges.
+    /// Complexity: O(1*).
     fn remove_all_edges_where_vertex(&self, vertex: &Vertex<K, V>) -> Option<(Self, Vec<Edge<K>>)> {
         if !self.vertices.contains(vertex) {
             return None;
@@ -125,11 +151,15 @@ where
         self.internal_remove_all_edges_where_vertex(vertex)
     }
 
+    /// Remove all existing edges from or to a given key, then return the new graph and the deleted edges.
+    /// Complexity: O(1*).
     fn remove_all_edges_where_key(&self, key_from: K) -> Option<(Self, Vec<Edge<K>>)> {
         let vertex = Vertex::new(key_from);
         self.remove_all_edges_where_vertex(&vertex)
     }
 
+    /// Remove all existing edges from a given vertex, then return the new graph and the deleted edges.
+    /// Complexity: O(1*).
     fn remove_all_edges_from_vertex(&self, vertex: &Vertex<K, V>) -> Option<(Self, Vec<Edge<K>>)> {
         if !self.vertices.contains(vertex) {
             return None;
@@ -150,6 +180,8 @@ where
         Some((new_graph, removed_edges))
     }
 
+    /// Remove all existing edges from a given key, then return the new graph and the deleted edges.
+    /// Complexity: O(1*).
     fn remove_all_edges_from_key(&self, key_from: K) -> Option<(Self, Vec<Edge<K>>)> {
         let vertex = Vertex::new(key_from);
         self.remove_all_edges_from_vertex(&vertex)
@@ -161,6 +193,8 @@ where
     K: Key,
     V: Value,
 {
+    /// Get the successors of each vertex.
+    /// Complexity: O(V + E).
     fn successors(&self) -> HashMap<Vertex<K, V>, Vec<Edge<K>>, RandomState> {
         let init_hashmap = self
             .vertices
@@ -179,6 +213,8 @@ where
         })
     }
 
+    /// Get the predecessors of each vertex.
+    /// Complexity: O(V + E).
     fn predecessors(&self) -> HashMap<Vertex<K, V>, Vec<Edge<K>>, RandomState> {
         let init_hashmap = self
             .vertices
@@ -210,6 +246,8 @@ where
     K: Key,
     V: Value,
 {
+    /// Create a new directed graph.
+    /// Complexity: O(1)
     pub fn new() -> Self {
         BasicDirectedGraph {
             vertices: HashSet::new(),

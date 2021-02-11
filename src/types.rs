@@ -1,13 +1,15 @@
 use std::cmp::Ordering;
 use std::hash::{Hash, Hasher};
 
+/// An interface used as an helper to implement a key.
 pub trait Key: Clone + Copy + PartialEq + Eq + PartialOrd + Ord + Hash {}
 impl<T: Copy + Hash + Ord> Key for T {}
 
+/// An interface used as an helper to implement a value contained in a vertex.
 pub trait Value: Clone + Copy + Default + PartialEq {}
 impl<T: Copy + Default + PartialEq> Value for T {}
 
-/// Structure describing a vertex with a [`Key`] and a [`Value`].
+/// A structure describing a vertex with a [`Key`] and a [`Value`].
 #[derive(Clone, Copy, Debug)]
 pub struct Vertex<K, V>
 where
@@ -18,7 +20,7 @@ where
     value: V,
 }
 
-/// Structure describing an edge with an origin [`Key`] and destination [`Key`].
+/// A structure describing an edge with an origin [`Key`] and destination [`Key`].
 #[derive(Clone, Copy, Hash, Eq, PartialEq, Ord, PartialOrd, Debug)]
 pub struct Edge<K>
 where
