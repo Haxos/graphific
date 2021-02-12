@@ -88,9 +88,9 @@ where
     /// Add a new edge then return the new graph.
     /// Complexity: O(1*).
     fn add_edge(&self, edge: Edge<K>) -> Option<Self> {
-        let key_from: Vertex<K, V> = Vertex::new(edge.from().clone());
-        let key_to: Vertex<K, V> = Vertex::new(edge.to().clone());
-        if !self.vertices.contains(&key_from) || !self.vertices.contains(&key_to) {
+        let vertex_from: Vertex<K, V> = Vertex::new(edge.from().clone());
+        let vertex_to: Vertex<K, V> = Vertex::new(edge.to().clone());
+        if !self.vertices.contains(&vertex_from) || !self.vertices.contains(&vertex_to) {
             return None;
         }
 
@@ -143,7 +143,7 @@ where
     }
 
     /// Remove all existing edges from or to a given vertex, then return the new graph and the deleted edges.
-    /// Complexity: O(1*).
+    /// Complexity: O(E).
     fn remove_all_edges_where_vertex(&self, vertex: &Vertex<K, V>) -> Option<(Self, Vec<Edge<K>>)> {
         if !self.vertices.contains(vertex) {
             return None;
@@ -152,14 +152,14 @@ where
     }
 
     /// Remove all existing edges from or to a given key, then return the new graph and the deleted edges.
-    /// Complexity: O(1*).
+    /// Complexity: O(E).
     fn remove_all_edges_where_key(&self, key_from: K) -> Option<(Self, Vec<Edge<K>>)> {
         let vertex = Vertex::new(key_from);
         self.remove_all_edges_where_vertex(&vertex)
     }
 
     /// Remove all existing edges from a given vertex, then return the new graph and the deleted edges.
-    /// Complexity: O(1*).
+    /// Complexity: O(E).
     fn remove_all_edges_from_vertex(&self, vertex: &Vertex<K, V>) -> Option<(Self, Vec<Edge<K>>)> {
         if !self.vertices.contains(vertex) {
             return None;
@@ -181,7 +181,7 @@ where
     }
 
     /// Remove all existing edges from a given key, then return the new graph and the deleted edges.
-    /// Complexity: O(1*).
+    /// Complexity: O(E).
     fn remove_all_edges_from_key(&self, key_from: K) -> Option<(Self, Vec<Edge<K>>)> {
         let vertex = Vertex::new(key_from);
         self.remove_all_edges_from_vertex(&vertex)
