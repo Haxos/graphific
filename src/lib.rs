@@ -1,3 +1,5 @@
+//! `graphific` is a graph data structure library.
+
 mod algo;
 mod any_graph;
 mod basic_directed_graph;
