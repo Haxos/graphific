@@ -1,11 +1,14 @@
 use crate::{AnyGraph, Key, Kinship, Value, Vertex};
 use std::collections::{HashSet, VecDeque};
 
+/// An interface describing all the algorithms that can be used on any kind of graphs.
 pub trait Algorithms<K, V>: AnyGraph<K, V> + Kinship<K, V>
 where
     K: Key,
     V: Value,
 {
+    /// Execute a Broad Search First the return the discovered graph.
+    /// There is no order in which the edges are treated.
     fn bfs(&self) -> Option<Self> {
         return if self.vertices().is_empty() {
             None
@@ -15,6 +18,8 @@ where
         };
     }
 
+    /// Execute a Broad Search First with a starting vertex the return the discovered graph.
+    /// There is no order in which the edges are treated.
     fn bfs_with_starting_vertex(&self, starting_vertex: &Vertex<K, V>) -> Option<Self> {
         if !self.vertices().contains(starting_vertex) {
             return None;
@@ -47,6 +52,8 @@ where
         };
     }
 
+    /// Execute a Deep Search First the return the discovered graph.
+    /// There is no order in which the edges are treated.
     fn dfs(&self) -> Option<Self> {
         return if self.vertices().is_empty() {
             None
@@ -56,6 +63,8 @@ where
         };
     }
 
+    /// Execute a Deep Search First with a starting vertex the return the discovered graph.
+    /// There is no order in which the edges are treated.
     fn dfs_with_starting_vertex(&self, starting_vertex: &Vertex<K, V>) -> Option<Self> {
         if !self.vertices().contains(starting_vertex) {
             return None;
