@@ -12,3 +12,5 @@ Cargo.lock
 # IntelliJ files
 /.idea/
 *.iml
+
+/doc/**
