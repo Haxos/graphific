@@ -6,6 +6,7 @@ authors = ["Haxos <a.mayocartes@protonmail.com>"]
 edition = "2018"
 keywords = ["graph", "data-structures", "graph-algorithm"]
 categories = ["data-structures"]
+description = "Graphific is a graph data structure library."
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
