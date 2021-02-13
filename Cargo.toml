@@ -7,6 +7,8 @@ edition = "2018"
 keywords = ["graph", "data-structures", "graph-algorithm"]
 categories = ["data-structures"]
 description = "Graphific is a graph data structure library."
+repository = "https://github.com/Haxos/graphific"
+documentation = "https://docs.rs/graphific"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
