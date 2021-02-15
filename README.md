@@ -26,7 +26,9 @@ will not be accepted.
 
 ## Credits
 Original creator : [Adrian Mayo Cartes](https://github.com/Haxos/)
+
 Inspired by : [petgraph](https://github.com/petgraph/petgraph) and [graphlib](https://github.com/purpleprotocol/graphlib)
+
 Special thanks to [Paul Reeve](https://github.com/paulreeve717) for suggesting the name.
 
 
