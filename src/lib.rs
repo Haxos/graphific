@@ -17,6 +17,8 @@ pub use self::types::Edge;
 pub use self::types::Key;
 pub use self::types::Value;
 pub use self::types::Vertex;
+pub use self::types::Weight;
+pub use self::types::WeightedEdge;
 
 pub use self::basic_directed_graph::BasicDirectedGraph;
 pub use self::basic_undirected_graph::BasicUndirectedGraph;
