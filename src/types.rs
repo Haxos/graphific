@@ -37,9 +37,9 @@ where
 /// A structure describing an edge with an origin [`Key`], a destination [`Key`] and a [`Weight`].
 #[derive(Clone, Copy, Hash, Eq, PartialEq, Ord, PartialOrd, Debug)]
 pub struct WeightedEdge<K, W>
-    where
-        K: Key,
-        W: Weight,
+where
+    K: Key,
+    W: Weight,
 {
     edge: Edge<K>,
     weight: W,
@@ -147,9 +147,9 @@ where
 }
 
 impl<K, W> WeightedEdge<K, W>
-    where
-        K: Key,
-        W: Weight,
+where
+    K: Key,
+    W: Weight,
 {
     /// Create a new edge.
     pub fn new(from: K, to: K) -> Self {
@@ -161,7 +161,10 @@ impl<K, W> WeightedEdge<K, W>
 
     /// Create a new edge with a weight.
     pub fn with_weight(from: K, to: K, weight: W) -> Self {
-        WeightedEdge { edge: Edge::new(from, to), weight }
+        WeightedEdge {
+            edge: Edge::new(from, to),
+            weight,
+        }
     }
 
     /// Get the origin.
@@ -176,11 +179,11 @@ impl<K, W> WeightedEdge<K, W>
 
     /// Get the weight.
     pub fn weight(&self) -> &W {
-        self.weight
+        &self.weight
     }
 
     /// Convert to a weightless edge.
-    pub fn as_edge(&self) -> Edge<K> {
-        self.edge
+    pub fn to_edge(&self) -> Edge<K> {
+        self.edge.clone()
     }
 }
