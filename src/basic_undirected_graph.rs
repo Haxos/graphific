@@ -1,6 +1,4 @@
-use crate::algo::Algorithms;
-use crate::kinship::Kinship;
-use crate::{AnyGraph, Edge, Key, Value, Vertex};
+use crate::{Algorithms, AnyGraph, Edge, Key, Kinship, Value, Vertex};
 use std::borrow::BorrowMut;
 use std::collections::hash_map::RandomState;
 use std::collections::{HashMap, HashSet};

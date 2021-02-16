@@ -10,8 +10,8 @@ pub trait Value: Clone + Copy + Default + PartialEq {}
 impl<T: Copy + Default + PartialEq> Value for T {}
 
 /// An interface used as an helper to implement a weight for an edge.
-pub trait Weight: Clone + Copy + Default + PartialEq {}
-impl<T: Copy + Default + PartialEq> Weight for T {}
+pub trait Weight: Clone + Copy + Default + PartialEq + Eq + PartialOrd + Ord {}
+impl<T: Copy + Default + Ord> Weight for T {}
 
 /// A structure describing a vertex with a [`Key`] and a [`Value`].
 #[derive(Clone, Copy, Debug)]
@@ -169,12 +169,12 @@ where
 
     /// Get the origin.
     pub fn from(&self) -> &K {
-        self.edge.from()
+        &self.edge.from()
     }
 
     /// Get the destination.
     pub fn to(&self) -> &K {
-        self.edge.to()
+        &self.edge.to()
     }
 
     /// Get the weight.
