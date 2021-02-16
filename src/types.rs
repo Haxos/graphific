@@ -169,12 +169,12 @@ where
 
     /// Get the origin.
     pub fn from(&self) -> &K {
-        &self.edge.from()
+        self.edge.from()
     }
 
     /// Get the destination.
     pub fn to(&self) -> &K {
-        &self.edge.to()
+        self.edge.to()
     }
 
     /// Get the weight.

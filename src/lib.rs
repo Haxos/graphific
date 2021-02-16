@@ -2,6 +2,7 @@
 
 mod algo;
 mod any_graph;
+mod any_network;
 mod basic_directed_graph;
 mod basic_undirected_graph;
 mod kinship;

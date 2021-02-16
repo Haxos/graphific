@@ -1,7 +1,7 @@
 use crate::types::{Key, Value, Vertex};
 use crate::Edge;
 
-/// An interface used to describe any kind of graph.
+/// An interface used for describing any kind of graph.
 ///
 /// # Generic implementations
 /// K describe a type of [`Key`] to use.
