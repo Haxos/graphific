@@ -74,13 +74,6 @@ where
         Some((new_graph, vertices, edges))
     }
 
-    /// Remove a vertex by its key then return the new graph, the deleted vertex and its edges.
-    /// Complexity: O(E).
-    fn remove_vertex_where_key(&self, key: K) -> Option<(Self, Vertex<K, V>, Vec<Edge<K>>)> {
-        let vertex: Vertex<K, V> = Vertex::new(key);
-        self.remove_vertex(&vertex)
-    }
-
     /// Add a new edge then return the new graph.
     /// Complexity: O(1*).
     fn add_edge(&self, edge: Edge<K>) -> Option<Self> {
@@ -98,12 +91,6 @@ where
         };
     }
 
-    /// Add a new edge between 2 keys then return the new graph.
-    /// Complexity: O(1*).
-    fn add_edge_between_keys(&self, key_from: K, key_to: K) -> Option<Self> {
-        self.add_edge(Edge::new(key_from, key_to))
-    }
-
     /// Remove an existing edge then return the new graph and the deleted edge.
     /// Complexity: O(1*).
     fn remove_edge(&self, edge: &Edge<K>) -> Option<(Self, Edge<K>)> {
@@ -117,13 +104,6 @@ where
         } else {
             None
         };
-    }
-
-    /// Remove an existing edge by their keys, then return the new graph and the deleted edge.
-    /// Complexity: O(1*).
-    fn remove_edge_where_keys(&self, key_from: K, key_to: K) -> Option<(Self, Edge<K>)> {
-        let edge = Edge::new(key_from, key_to);
-        self.remove_edge(&edge)
     }
 
     /// Remove all the edges then return the new graph and all the deleted edges.
@@ -147,13 +127,6 @@ where
         self.internal_remove_all_edges_where_vertex(vertex)
     }
 
-    /// Remove all existing edges from or to a given key, then return the new graph and the deleted edges.
-    /// Complexity: O(E).
-    fn remove_all_edges_where_key(&self, key_from: K) -> Option<(Self, Vec<Edge<K>>)> {
-        let vertex = Vertex::new(key_from);
-        self.remove_all_edges_where_vertex(&vertex)
-    }
-
     /// Remove all existing edges from a given vertex, then return the new graph and the deleted edges.
     /// Complexity: O(E).
     fn remove_all_edges_from_vertex(&self, vertex: &Vertex<K, V>) -> Option<(Self, Vec<Edge<K>>)> {
@@ -174,13 +147,6 @@ where
             .collect();
 
         Some((new_graph, removed_edges))
-    }
-
-    /// Remove all existing edges from a given key, then return the new graph and the deleted edges.
-    /// Complexity: O(E).
-    fn remove_all_edges_from_key(&self, key_from: K) -> Option<(Self, Vec<Edge<K>>)> {
-        let vertex = Vertex::new(key_from);
-        self.remove_all_edges_from_vertex(&vertex)
     }
 }
 
