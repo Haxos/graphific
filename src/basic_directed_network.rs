@@ -21,15 +21,20 @@ where
     W: Weight,
 {
     fn vertices(&self) -> Vec<Vertex<K, V>> {
-        unimplemented!()
+        self.vertices.iter().cloned().collect()
     }
 
     fn edges(&self) -> Vec<Edge<K>> {
-        unimplemented!()
+        self.edges.iter().map(|e| e.to_edge()).collect()
     }
 
     fn add_vertex(&self, vertex: Vertex<K, V>) -> Option<Self> {
-        unimplemented!()
+        let mut new_graph = self.clone();
+        return if new_graph.vertices.insert(vertex) {
+            Some(new_graph)
+        } else {
+            None
+        };
     }
 
     fn remove_vertex(&self, vertex: &Vertex<K, V>) -> Option<(Self, Vertex<K, V>, Vec<Edge<K>>)> {
@@ -45,18 +50,22 @@ where
     }
 
     fn add_edge(&self, edge: Edge<K>) -> Option<Self> {
-        unimplemented!()
-    }
+        let vertex_from: Vertex<K, V> = Vertex::new(edge.from().clone());
+        let vertex_to: Vertex<K, V> = Vertex::new(edge.to().clone());
+        if !self.vertices.contains(&vertex_from) || !self.vertices.contains(&vertex_to) {
+            return None;
+        }
 
-    fn add_edge_between_keys(&self, key_from: K, key_to: K) -> Option<Self> {
-        unimplemented!()
+        let mut new_graph = self.clone();
+        let weighted_edge = WeightedEdge::new(edge.from().clone(), edge.to().clone());
+        return if new_graph.edges.insert(weighted_edge) {
+            Some(new_graph)
+        } else {
+            None
+        };
     }
 
     fn remove_edge(&self, edge: &Edge<K>) -> Option<(Self, Edge<K>)> {
-        unimplemented!()
-    }
-
-    fn remove_edge_where_keys(&self, key_from: K, key_to: K) -> Option<(Self, Edge<K>)> {
         unimplemented!()
     }
 
@@ -68,15 +77,7 @@ where
         unimplemented!()
     }
 
-    fn remove_all_edges_where_key(&self, key_from: K) -> Option<(Self, Vec<Edge<K>>)> {
-        unimplemented!()
-    }
-
     fn remove_all_edges_from_vertex(&self, vertex: &Vertex<K, V>) -> Option<(Self, Vec<Edge<K>>)> {
-        unimplemented!()
-    }
-
-    fn remove_all_edges_from_key(&self, key_from: K) -> Option<(Self, Vec<Edge<K>>)> {
         unimplemented!()
     }
 }
@@ -88,7 +89,7 @@ where
     W: Weight,
 {
     fn weighted_edges(&self) -> Vec<WeightedEdge<K, W>> {
-        unimplemented!()
+        self.edges.iter().cloned().collect()
     }
 
     fn remove_vertex(
@@ -103,7 +104,18 @@ where
     }
 
     fn add_weighted_edge(&self, weighted_edge: WeightedEdge<K, W>) -> Option<Self> {
-        unimplemented!()
+        let vertex_from: Vertex<K, V> = Vertex::new(weighted_edge.from().clone());
+        let vertex_to: Vertex<K, V> = Vertex::new(weighted_edge.to().clone());
+        if !self.vertices.contains(&vertex_from) || !self.vertices.contains(&vertex_to) {
+            return None;
+        }
+
+        let mut new_graph = self.clone();
+        return if new_graph.edges.insert(weighted_edge) {
+            Some(new_graph)
+        } else {
+            None
+        };
     }
 
     fn remove_weighted_edge(&self) -> Option<(Self, WeightedEdge<K, W>)> {

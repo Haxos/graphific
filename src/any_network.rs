@@ -35,7 +35,9 @@ where
     ) -> Option<(Self, Vec<WeightedEdge<K, W>>)>;
 
     /// Remove all existing edges from or to a given key, then return the new graph and the deleted edges.
-    fn remove_all_edges_where_key(&self, key_from: K) -> Option<(Self, Vec<WeightedEdge<K, W>>)>;
+    fn remove_all_edges_where_key(&self, key_from: K) -> Option<(Self, Vec<WeightedEdge<K, W>>)> {
+        AnyNetwork::remove_all_edges_where_vertex(&self, &Vertex::new(key_from))
+    }
 
     /// Remove all existing edges from a given vertex, then return the new graph and the deleted edges.
     fn remove_all_edges_from_vertex(
@@ -44,5 +46,7 @@ where
     ) -> Option<(Self, Vec<WeightedEdge<K, W>>)>;
 
     /// Remove all existing edges from a given key, then return the new graph and the deleted edges.
-    fn remove_all_edges_from_key(&self, key_from: K) -> Option<(Self, Vec<WeightedEdge<K, W>>)>;
+    fn remove_all_edges_from_key(&self, key_from: K) -> Option<(Self, Vec<WeightedEdge<K, W>>)> {
+        AnyNetwork::remove_all_edges_where_vertex(&self, &Vertex::new(key_from))
+    }
 }
