@@ -38,7 +38,29 @@ where
     }
 
     fn remove_vertex(&self, vertex: &Vertex<K, V>) -> Option<(Self, Vertex<K, V>, Vec<Edge<K>>)> {
-        unimplemented!()
+        let mut new_graph = self.clone();
+        return if let Some(removed_vertex) = self.vertices.get(&vertex) {
+            if new_graph.vertices.remove(removed_vertex) {
+                if let Some((new_graph, removed_edges)) =
+                    new_graph.internal_remove_all_edges_where_vertex(removed_vertex)
+                {
+                    Some((
+                        new_graph,
+                        *removed_vertex,
+                        removed_edges
+                            .into_iter()
+                            .map(|edge| edge.to_edge())
+                            .collect(),
+                    ))
+                } else {
+                    None
+                }
+            } else {
+                None
+            }
+        } else {
+            None
+        };
     }
 
     fn remove_all_vertices(&self) -> Option<(Self, Vec<Vertex<K, V>>, Vec<Edge<K>>)> {
@@ -146,5 +168,41 @@ where
 
     fn remove_all_edges_from_key(&self, key_from: K) -> Option<(Self, Vec<WeightedEdge<K, W>>)> {
         unimplemented!()
+    }
+}
+
+impl<K, V, W> BasicDirectedNetwork<K, V, W>
+where
+    K: Key,
+    V: Value,
+    W: Weight,
+{
+    /// Create a new directed graph.
+    /// Complexity: O(1)
+    pub fn new() -> Self {
+        BasicDirectedNetwork {
+            vertices: HashSet::new(),
+            edges: HashSet::new(),
+        }
+    }
+
+    fn internal_remove_all_edges_where_vertex(
+        &self,
+        vertex: &Vertex<K, V>,
+    ) -> Option<(Self, Vec<WeightedEdge<K, W>>)> {
+        let mut new_network = self.clone();
+        let removed_edges: Vec<WeightedEdge<K, W>> = new_network
+            .edges
+            .iter()
+            .cloned()
+            .filter(|edge| edge.from().eq(vertex.key()) || edge.to().eq(vertex.key()))
+            .collect();
+        new_network.edges = new_network
+            .edges
+            .into_iter()
+            .filter(|edge| !(edge.from().eq(vertex.key()) || edge.to().eq(vertex.key())))
+            .collect();
+
+        Some((new_network, removed_edges))
     }
 }
