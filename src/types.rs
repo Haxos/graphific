@@ -24,19 +24,9 @@ where
     value: V,
 }
 
-/// A structure describing an edge with an origin [`Key`] and destination [`Key`].
-#[derive(Clone, Copy, Hash, Eq, PartialEq, Ord, PartialOrd, Debug)]
-pub struct Edge<K>
-where
-    K: Key,
-{
-    from: K,
-    to: K,
-}
-
-/// A structure describing an edge with an origin [`Key`], a destination [`Key`] and a [`Weight`].
+/// A structure describing an edge with an origin [`Key`] and destination [`Key`] and a potentially [`Weight`].
 #[derive(Clone, Copy, Debug)]
-pub struct WeightedEdge<K, W>
+pub struct Edge<K, W = i8>
 where
     K: Key,
     W: Weight,
@@ -127,27 +117,7 @@ where
     }
 }
 
-impl<K> Edge<K>
-where
-    K: Key,
-{
-    /// Create a new edge.
-    pub fn new(from: K, to: K) -> Self {
-        Edge { from, to }
-    }
-
-    /// Get the origin.
-    pub fn from(&self) -> &K {
-        &self.from
-    }
-
-    /// Get the destination.
-    pub fn to(&self) -> &K {
-        &self.to
-    }
-}
-
-impl<K, W> Hash for WeightedEdge<K, W>
+impl<K, W> Hash for Edge<K, W>
 where
     K: Key,
     W: Weight,
@@ -158,7 +128,7 @@ where
     }
 }
 
-impl<K, W> PartialEq for WeightedEdge<K, W>
+impl<K, W> PartialEq for Edge<K, W>
 where
     K: Key,
     W: Weight,
@@ -168,14 +138,14 @@ where
     }
 }
 
-impl<K, W> Eq for WeightedEdge<K, W>
+impl<K, W> Eq for Edge<K, W>
 where
     K: Key,
     W: Weight,
 {
 }
 
-impl<K, W> PartialOrd for WeightedEdge<K, W>
+impl<K, W> PartialOrd for Edge<K, W>
 where
     K: Key,
     W: Weight,
@@ -191,7 +161,7 @@ where
     }
 }
 
-impl<K, W> Ord for WeightedEdge<K, W>
+impl<K, W> Ord for Edge<K, W>
 where
     K: Key,
     W: Weight,
@@ -207,14 +177,14 @@ where
     }
 }
 
-impl<K, W> WeightedEdge<K, W>
+impl<K, W> Edge<K, W>
 where
     K: Key,
     W: Weight,
 {
     /// Create a new edge.
     pub fn new(from: K, to: K) -> Self {
-        WeightedEdge {
+        Edge {
             from,
             to,
             weight: W::default(),
@@ -223,7 +193,7 @@ where
 
     /// Create a new edge with a weight.
     pub fn with_weight(from: K, to: K, weight: W) -> Self {
-        WeightedEdge { from, to, weight }
+        Edge { from, to, weight }
     }
 
     /// Get the origin.
@@ -239,10 +209,5 @@ where
     /// Get the weight.
     pub fn weight(&self) -> &W {
         &self.weight
-    }
-
-    /// Convert to a weightless edge.
-    pub fn to_edge(&self) -> Edge<K> {
-        Edge::new(self.from.clone(), self.to.clone())
     }
 }
