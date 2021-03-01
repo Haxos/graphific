@@ -7,7 +7,9 @@ mod utils;
 #[cfg(test)]
 mod algo_tests {
     use crate::utils::assert_sorted_vec_eq;
-    use graphific::{Algorithms, AnyGraph, BasicDirectedGraph, BasicUndirectedGraph, Edge, Vertex};
+    use graphific::{
+        Algorithms, AnyGraph, BasicDirectedGraph, BasicUndirectedGraph, Edge, Functions, Vertex,
+    };
 
     fn init_bdg() -> BasicDirectedGraph<i32, i32> {
         let bdg: BasicDirectedGraph<i32, i32> = BasicDirectedGraph::new();
@@ -57,27 +59,29 @@ mod algo_tests {
     fn bfs() {
         let bdg: BasicDirectedGraph<i32, i32> = init_bdg();
         let bug: BasicUndirectedGraph<i32, i32> = init_bug();
+        let mut fns = Functions::empty();
+        fns.set_edges_comparator(|a, b| a.partial_cmp(b).unwrap());
 
         // test bfs_with_starting_vertex and bfs
         let expected_dg = bdg
-            .bfs_with_starting_vertex(bdg.vertices().first().unwrap())
+            .bfs_with_starting_vertex(bdg.vertices().first().unwrap(), fns)
             .unwrap();
-        let result_dg = bdg.bfs().unwrap();
+        let result_dg = bdg.simple_bfs().unwrap();
         assert_eq!(true, result_dg.eq(&expected_dg));
 
         let expected_ug = bug
-            .bfs_with_starting_vertex(bug.vertices().first().unwrap())
+            .bfs_with_starting_vertex(bug.vertices().first().unwrap(), fns)
             .unwrap();
-        let result_ug = bug.bfs().unwrap();
+        let result_ug = bug.simple_bfs().unwrap();
         assert_eq!(true, result_ug.eq(&expected_ug));
 
         // test if empty
         let empty_dg: BasicDirectedGraph<i32, i32> = BasicDirectedGraph::new();
         let empty_ug: BasicUndirectedGraph<i32, i32> = BasicUndirectedGraph::new();
 
-        let should_be_none = empty_dg.bfs();
+        let should_be_none = empty_dg.simple_bfs();
         assert_eq!(true, should_be_none.is_none());
-        let should_be_none = empty_ug.bfs();
+        let should_be_none = empty_ug.simple_bfs();
         assert_eq!(true, should_be_none.is_none());
 
         // test bfs_with_starting_vertex and bfs
@@ -98,7 +102,7 @@ mod algo_tests {
             .add_edge(Edge::new(3, 4))
             .unwrap();
 
-        let result_dg = bdg.bfs_with_starting_vertex(&start_vertex).unwrap();
+        let result_dg = bdg.bfs_with_starting_vertex(&start_vertex, fns).unwrap();
         assert_sorted_vec_eq(&expected_dg.edges(), &result_dg.edges());
         assert_eq!(true, result_dg.eq(&expected_dg));
 
@@ -117,7 +121,7 @@ mod algo_tests {
             .unwrap()
             .add_edge(Edge::new(3, 4))
             .unwrap();
-        let result_ug = bug.bfs_with_starting_vertex(&start_vertex).unwrap();
+        let result_ug = bug.bfs_with_starting_vertex(&start_vertex, fns).unwrap();
         assert_eq!(true, result_ug.eq(&expected_ug));
     }
 
@@ -130,22 +134,22 @@ mod algo_tests {
         let expected_dg = bdg
             .dfs_with_starting_vertex(bdg.vertices().first().unwrap())
             .unwrap();
-        let result_dg = bdg.dfs().unwrap();
+        let result_dg = bdg.simple_dfs().unwrap();
         assert_eq!(true, result_dg.eq(&expected_dg));
 
         let expected_ug = bug
             .dfs_with_starting_vertex(bug.vertices().first().unwrap())
             .unwrap();
-        let result_ug = bug.dfs().unwrap();
+        let result_ug = bug.simple_dfs().unwrap();
         assert_eq!(true, result_ug.eq(&expected_ug));
 
         // test if empty
         let empty_dg: BasicDirectedGraph<i32, i32> = BasicDirectedGraph::new();
         let empty_ug: BasicUndirectedGraph<i32, i32> = BasicUndirectedGraph::new();
 
-        let should_be_none = empty_dg.dfs();
+        let should_be_none = empty_dg.simple_dfs();
         assert_eq!(true, should_be_none.is_none());
-        let should_be_none = empty_ug.dfs();
+        let should_be_none = empty_ug.simple_dfs();
         assert_eq!(true, should_be_none.is_none());
 
         // test dfs_with_starting_vertex and dfs

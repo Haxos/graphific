@@ -1,21 +1,22 @@
-use crate::{AnyGraph, Edge, Key, Value, Vertex};
+use crate::{AnyGraph, Edge, Key, Value, Vertex, Weight};
 
 use std::collections::HashMap;
 
 /// An interface for getting the successors and predecessors of each [`Vertex`].
-pub trait Kinship<K, V>: AnyGraph<K, V>
+pub trait Kinship<K, V, W>: AnyGraph<K, V, W>
 where
     K: Key,
     V: Value,
+    W: Weight,
 {
     /// Get the successors of each vertex.
-    fn successors(&self) -> HashMap<Vertex<K, V>, Vec<Edge<K>>>;
+    fn successors(&self) -> HashMap<Vertex<K, V>, Vec<Edge<K, W>>>;
 
     /// Get the predecessors of each vertex.
-    fn predecessors(&self) -> HashMap<Vertex<K, V>, Vec<Edge<K>>>;
+    fn predecessors(&self) -> HashMap<Vertex<K, V>, Vec<Edge<K, W>>>;
 
     /// Get the successors of each vertex where the key is a [`Key`].
-    fn successors_as_key_and_edges(&self) -> HashMap<K, Vec<Edge<K>>> {
+    fn successors_as_key_and_edges(&self) -> HashMap<K, Vec<Edge<K, W>>> {
         self.successors()
             .iter()
             .fold(HashMap::new(), |mut acc, (vertex, edges)| {
@@ -25,7 +26,7 @@ where
     }
 
     /// Get the predecessors of each vertex where the key is a [`Key`].
-    fn predecessors_as_key_and_edges(&self) -> HashMap<K, Vec<Edge<K>>> {
+    fn predecessors_as_key_and_edges(&self) -> HashMap<K, Vec<Edge<K, W>>> {
         self.predecessors()
             .iter()
             .fold(HashMap::new(), |mut acc, (vertex, edges)| {

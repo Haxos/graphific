@@ -8,6 +8,7 @@ mod kinship;
 mod types;
 
 pub use self::algo::Algorithms;
+pub use self::algo::Functions;
 
 pub use self::any_graph::AnyGraph;
 
