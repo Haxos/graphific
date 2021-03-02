@@ -1,22 +1,24 @@
 use crate::{AnyGraph, Edge, Key, Kinship, Value, Vertex, Weight};
 use std::cmp::Ordering;
 use std::collections::{HashSet, VecDeque};
+use std::sync::{Arc, Mutex};
 
-#[derive(Copy, Clone)]
-pub struct Functions<K, V, W>
+#[derive(Clone)]
+pub struct Functions<'a, K, V, W>
 where
+    'a: 'static,
     K: Key,
     V: Value,
     W: Weight,
 {
-    edges_comparator: Option<fn(&Edge<K, W>, &Edge<K, W>) -> Ordering>,
-    vertex_fn: Option<fn(&Vertex<K, V>)>,
-    pre_fn: Option<fn(&Edge<K, W>)>,
-    sym_fn: Option<fn(&Edge<K, W>)>,
-    post_fn: Option<fn(&Edge<K, W>)>,
+    edges_comparator: Option<Arc<Mutex<dyn FnMut(&Edge<K, W>, &Edge<K, W>) -> Ordering + 'a>>>,
+    vertex_fn: Option<Arc<Mutex<dyn FnMut(&Vertex<K, V>) + 'a>>>,
+    pre_fn: Option<Arc<Mutex<dyn FnMut(&Edge<K, W>) + 'a>>>,
+    // sym_fn: Option<dyn FnMut(&Edge<K, W>)>,
+    // post_fn: Option<dyn FnMut(&Edge<K, W>)>,
 }
 
-impl<K, V, W> Functions<K, V, W>
+impl<'a, K, V, W> Functions<'a, K, V, W>
 where
     K: Key,
     V: Value,
@@ -27,50 +29,64 @@ where
             edges_comparator: None,
             vertex_fn: None,
             pre_fn: None,
-            sym_fn: None,
-            post_fn: None,
+            // sym_fn: None,
+            // post_fn: None,
         }
     }
 
-    pub fn edges_comparator(&self) -> &Option<fn(&Edge<K, W>, &Edge<K, W>) -> Ordering> {
+    pub fn edges_comparator(
+        &self,
+    ) -> &Option<Arc<Mutex<dyn FnMut(&Edge<K, W>, &Edge<K, W>) -> Ordering>>> {
         &self.edges_comparator
     }
 
-    pub fn set_edges_comparator(&mut self, f: fn(&Edge<K, W>, &Edge<K, W>) -> Ordering) {
-        self.edges_comparator = Some(f);
+    pub fn set_edges_comparator<F>(&mut self, f: F)
+    where
+        F: FnMut(&Edge<K, W>, &Edge<K, W>) -> Ordering,
+        F: 'a,
+    {
+        self.edges_comparator = Some(Arc::new(Mutex::new(f)));
     }
 
-    pub fn vertex_fn(&self) -> &Option<fn(&Vertex<K, V>)> {
+    pub fn vertex_fn(&self) -> &Option<Arc<Mutex<dyn FnMut(&Vertex<K, V>)>>> {
         &self.vertex_fn
     }
 
-    pub fn set_vertex_fn(&mut self, f: fn(&Vertex<K, V>)) {
-        self.vertex_fn = Some(f);
+    pub fn set_vertex_fn<F>(&mut self, f: F)
+    where
+        F: FnMut(&Vertex<K, V>),
+        F: 'a,
+    {
+        self.vertex_fn = Some(Arc::new(Mutex::new(f)));
     }
 
-    pub fn pre_fn(&self) -> &Option<fn(&Edge<K, W>)> {
+    pub fn pre_fn(&self) -> &Option<Arc<Mutex<dyn FnMut(&Edge<K, W>)>>> {
         &self.pre_fn
     }
 
-    pub fn set_pre_fn(&mut self, f: fn(&Edge<K, W>)) {
-        self.pre_fn = Some(f);
+    pub fn set_pre_fn<F>(&mut self, f: F)
+    where
+        F: FnMut(&Edge<K, W>),
+        F: 'a,
+    {
+        self.pre_fn = Some(Arc::new(Mutex::new(f)));
     }
 
-    pub fn sym_fn(&self) -> &Option<fn(&Edge<K, W>)> {
-        &self.sym_fn
-    }
-
-    pub fn set_sym_fn(&mut self, f: fn(&Edge<K, W>)) {
-        self.sym_fn = Some(f);
-    }
-
-    pub fn post_fn(&self) -> &Option<fn(&Edge<K, W>)> {
-        &self.post_fn
-    }
-
-    pub fn set_post_fn(&mut self, f: fn(&Edge<K, W>)) {
-        self.post_fn = Some(f);
-    }
+    // pub fn sym_fn(&self) -> &Option<fn(&Edge<K, W>)> {
+    //     &self.sym_fn
+    // }
+    //
+    // pub fn set_sym_fn(&mut self, f: fn(&Edge<K, W>)) {
+    //     self.sym_fn = Some(f);
+    // }
+    //
+    // pub fn post_fn(&self) -> &Option<fn(&Edge<K, W>)> {
+    //     &self.post_fn
+    // }
+    //
+    // pub fn set_post_fn(&mut self, f: fn(&Edge<K, W>)) {
+    //     self.post_fn = Some(f);
+    // }
 }
 
 /// An interface describing all the algorithms that can be used on any kind of graphs.
@@ -127,7 +143,8 @@ where
                     .collect();
 
                 if let Some(edges_comparator) = fns.edges_comparator() {
-                    neighbours.sort_by(edges_comparator);
+                    let f = edges_comparator.clone().lock().unwrap();
+                    neighbours.sort_by(move |a, b| f(a, b));
                 }
 
                 for neighbour in neighbours {
