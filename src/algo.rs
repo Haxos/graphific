@@ -101,10 +101,10 @@ where
     fn simple_bfs(&self) -> Option<Self> {
         let mut fns = Functions::empty();
         fns.set_edges_comparator(|a, b| a.partial_cmp(b).unwrap());
-        self.bfs(fns)
+        self.bfs(&fns)
     }
 
-    fn bfs(&self, fns: Functions<K, V, W>) -> Option<Self> {
+    fn bfs(&self, fns: &Functions<K, V, W>) -> Option<Self> {
         return if self.vertices().is_empty() {
             None
         } else {
@@ -118,7 +118,7 @@ where
     fn bfs_with_starting_vertex(
         &self,
         starting_vertex: &Vertex<K, V>,
-        fns: Functions<K, V, W>,
+        fns: &Functions<K, V, W>,
     ) -> Option<Self> {
         if !self.vertices().contains(starting_vertex) {
             return None;
@@ -143,8 +143,7 @@ where
                     .collect();
 
                 if let Some(edges_comparator) = fns.edges_comparator() {
-                    let f = edges_comparator.clone().lock().unwrap();
-                    neighbours.sort_by(move |a, b| f(a, b));
+                    neighbours.sort_by(|a, b| edges_comparator.clone().lock().unwrap()(a, b));
                 }
 
                 for neighbour in neighbours {
