@@ -10,8 +10,6 @@ mod algo_tests {
     use graphific::{
         Algorithms, AnyGraph, BasicDirectedGraph, BasicUndirectedGraph, Edge, Functions, Vertex,
     };
-    use std::cmp::Ordering;
-    use std::sync::Arc;
 
     fn init_bdg() -> BasicDirectedGraph<i32, i32> {
         let bdg: BasicDirectedGraph<i32, i32> = BasicDirectedGraph::new();
@@ -63,11 +61,11 @@ mod algo_tests {
         let bug: BasicUndirectedGraph<i32, i32> = init_bug();
         let mut fns = Functions::empty();
         let mut count = 0;
-        let mut edges_comparator: dyn FnMut(Edge<i32, i8>, Edge<i32, i8>) -> Ordering = |a, b| {
+        fns.set_edges_comparator(move |a: &Edge<i32, i8>, b: &Edge<i32, i8>| {
             count += 1;
+            println!("{}", count);
             a.partial_cmp(&b).unwrap()
-        };
-        fns.set_edges_comparator(Arc::new(edges_comparator));
+        });
 
         // test bfs_with_starting_vertex and bfs
         let expected_dg = bdg
