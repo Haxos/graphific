@@ -1,17 +1,22 @@
 use std::cmp::Ordering;
+use std::fmt;
+use std::fmt::{Display, Formatter};
 use std::hash::{Hash, Hasher};
 
 /// An interface used as an helper to implement a key.
-pub trait Key: Clone + Copy + PartialEq + Eq + PartialOrd + Ord + Hash {}
-impl<T: Copy + Hash + Ord> Key for T {}
+pub trait Key: Clone + Copy + PartialEq + Eq + PartialOrd + Ord + Hash + Display {}
+
+impl<T: Copy + Hash + Ord + Display> Key for T {}
 
 /// An interface used as an helper to implement a value contained in a vertex.
-pub trait Value: Clone + Copy + Default + PartialEq {}
-impl<T: Copy + Default + PartialEq> Value for T {}
+pub trait Value: Clone + Copy + Default + PartialEq + Display {}
+
+impl<T: Copy + Default + PartialEq + Display> Value for T {}
 
 /// An interface used as an helper to implement a weight for an edge.
-pub trait Weight: Clone + Copy + Default + PartialEq + PartialOrd {}
-impl<T: Copy + Default + PartialEq + PartialOrd> Weight for T {}
+pub trait Weight: Clone + Copy + Default + PartialEq + PartialOrd + Display {}
+
+impl<T: Copy + Default + PartialEq + PartialOrd + Display> Weight for T {}
 
 /// A structure describing a vertex with a [`Key`] and a [`Value`].
 #[derive(Clone, Copy, Debug)]
@@ -80,6 +85,16 @@ where
 {
     fn cmp(&self, other: &Self) -> Ordering {
         self.key.cmp(other.key())
+    }
+}
+
+impl<K, V> Display for Vertex<K, V>
+where
+    K: Key,
+    V: Value,
+{
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        write!(f, "({}, {})", self.key, self.value)
     }
 }
 
@@ -174,6 +189,16 @@ where
         } else {
             Ordering::Greater
         }
+    }
+}
+
+impl<K, W> Display for Edge<K, W>
+where
+    K: Key,
+    W: Weight,
+{
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        write!(f, "{}--{}->{}", self.from, self.weight, self.to)
     }
 }
 
