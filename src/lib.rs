@@ -1,13 +1,13 @@
 //! `graphific` is a graph data structure library.
 
-mod algo;
+mod algorithms;
 mod any_graph;
 mod basic_directed_graph;
 mod basic_undirected_graph;
 mod kinship;
 mod types;
 
-pub use self::algo::Algorithms;
+pub use self::algorithms::Algorithms;
 
 pub use self::any_graph::AnyGraph;
 

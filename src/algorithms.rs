@@ -12,21 +12,16 @@ where
     /// Execute a Broad Search First the return the discovered graph.
     /// There is no order in which the edges are treated.
     fn simple_bfs(&self) -> Option<Self> {
-        self.bfs(|a, b| a.partial_cmp(b).unwrap())
-    }
-
-    fn bfs(&self, sorting_edges_fn: fn(&Edge<K, W>, &Edge<K, W>) -> Ordering) -> Option<Self> {
-        return if self.vertices().is_empty() {
-            None
+        return if let Some(first) = self.vertices().first() {
+            self.bfs(first, |a, b| a.partial_cmp(b).unwrap())
         } else {
-            let first = self.vertices().first().unwrap().clone();
-            self.bfs_with_starting_vertex(&first, sorting_edges_fn)
+            None
         };
     }
 
     /// Execute a Broad Search First with a starting vertex the return the discovered graph.
     /// There is no order in which the edges are treated.
-    fn bfs_with_starting_vertex(
+    fn bfs(
         &self,
         starting_vertex: &Vertex<K, V>,
         sorting_edges_fn: fn(&Edge<K, W>, &Edge<K, W>) -> Ordering,
@@ -72,21 +67,16 @@ where
     /// Execute a Deep Search First the return the discovered graph.
     /// There is no order in which the edges are treated.
     fn simple_dfs(&self) -> Option<Self> {
-        self.dfs(|a, b| a.partial_cmp(b).unwrap())
-    }
-
-    fn dfs(&self, sorting_edges_fn: fn(&Edge<K, W>, &Edge<K, W>) -> Ordering) -> Option<Self> {
-        return if self.vertices().is_empty() {
-            None
+        return if let Some(first) = self.vertices().first() {
+            self.dfs(first, |a, b| a.partial_cmp(b).unwrap())
         } else {
-            let first = self.vertices().first().unwrap().clone();
-            self.dfs_with_starting_vertex(&first, sorting_edges_fn)
+            None
         };
     }
 
     /// Execute a Deep Search First with a starting vertex the return the discovered graph.
     /// There is no order in which the edges are treated.
-    fn dfs_with_starting_vertex(
+    fn dfs(
         &self,
         starting_vertex: &Vertex<K, V>,
         sorting_edges_fn: fn(&Edge<K, W>, &Edge<K, W>) -> Ordering,
