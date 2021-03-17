@@ -61,7 +61,7 @@ mod algo_tests {
         // test bfs_with_starting_vertex and bfs
         let expected_dg = bdg
             .bfs_with_starting_vertex(bdg.vertices().first().unwrap(), |a, b| {
-                println!("{}, {}", a, b);
+                // println!("{}, {}", a, b);
                 a.partial_cmp(b).unwrap()
             })
             .unwrap();
@@ -137,13 +137,17 @@ mod algo_tests {
 
         // test dfs_with_starting_vertex and dfs
         let expected_dg = bdg
-            .dfs_with_starting_vertex(bdg.vertices().first().unwrap())
+            .dfs_with_starting_vertex(bdg.vertices().first().unwrap(), |a, b| {
+                a.partial_cmp(b).unwrap()
+            })
             .unwrap();
         let result_dg = bdg.simple_dfs().unwrap();
         assert_eq!(true, result_dg.eq(&expected_dg));
 
         let expected_ug = bug
-            .dfs_with_starting_vertex(bug.vertices().first().unwrap())
+            .dfs_with_starting_vertex(bug.vertices().first().unwrap(), |a, b| {
+                a.partial_cmp(b).unwrap()
+            })
             .unwrap();
         let result_ug = bug.simple_dfs().unwrap();
         assert_eq!(true, result_ug.eq(&expected_ug));
@@ -175,7 +179,9 @@ mod algo_tests {
             .add_edge(Edge::new(3, 4))
             .unwrap();
 
-        let result_dg = bdg.dfs_with_starting_vertex(&start_vertex).unwrap();
+        let result_dg = bdg
+            .dfs_with_starting_vertex(&start_vertex, |a, b| a.partial_cmp(b).unwrap())
+            .unwrap();
         assert_sorted_vec_eq(&expected_dg.edges(), &result_dg.edges());
         assert_eq!(true, result_dg.eq(&expected_dg));
 
@@ -194,7 +200,9 @@ mod algo_tests {
             .unwrap()
             .add_edge(Edge::new(3, 4))
             .unwrap();
-        let result_ug = bug.dfs_with_starting_vertex(&start_vertex).unwrap();
+        let result_ug = bug
+            .dfs_with_starting_vertex(&start_vertex, |a, b| a.partial_cmp(b).unwrap())
+            .unwrap();
         assert_eq!(true, result_ug.eq(&expected_ug));
     }
 }

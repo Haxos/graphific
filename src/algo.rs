@@ -72,17 +72,25 @@ where
     /// Execute a Deep Search First the return the discovered graph.
     /// There is no order in which the edges are treated.
     fn simple_dfs(&self) -> Option<Self> {
+        self.dfs(|a, b| a.partial_cmp(b).unwrap())
+    }
+
+    fn dfs(&self, sorting_edges_fn: fn(&Edge<K, W>, &Edge<K, W>) -> Ordering) -> Option<Self> {
         return if self.vertices().is_empty() {
             None
         } else {
             let first = self.vertices().first().unwrap().clone();
-            self.dfs_with_starting_vertex(&first)
+            self.dfs_with_starting_vertex(&first, sorting_edges_fn)
         };
     }
 
     /// Execute a Deep Search First with a starting vertex the return the discovered graph.
     /// There is no order in which the edges are treated.
-    fn dfs_with_starting_vertex(&self, starting_vertex: &Vertex<K, V>) -> Option<Self> {
+    fn dfs_with_starting_vertex(
+        &self,
+        starting_vertex: &Vertex<K, V>,
+        sorting_edges_fn: fn(&Edge<K, W>, &Edge<K, W>) -> Ordering,
+    ) -> Option<Self> {
         if !self.vertices().contains(starting_vertex) {
             return None;
         }
@@ -98,11 +106,18 @@ where
 
             while !stack.is_empty() {
                 let current = stack.pop_back().unwrap();
-                let neighbours = successors.get(&current).unwrap();
+                let mut neighbours: Vec<Edge<K, W>> = successors
+                    .get(&current)
+                    .unwrap()
+                    .into_iter()
+                    .cloned()
+                    .collect();
+
+                neighbours.sort_by(sorting_edges_fn);
 
                 for neighbour in neighbours {
                     if !flagged.contains(neighbour.to()) {
-                        new_graph = new_graph.add_edge(*neighbour).unwrap();
+                        new_graph = new_graph.add_edge(neighbour).unwrap();
                         flagged.insert(neighbour.to().clone());
                         stack.push_back(neighbour.to().clone());
                     }
