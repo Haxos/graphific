@@ -7,9 +7,7 @@ mod utils;
 #[cfg(test)]
 mod algo_tests {
     use crate::utils::assert_sorted_vec_eq;
-    use graphific::{
-        Algorithms, AnyGraph, BasicDirectedGraph, BasicUndirectedGraph, Edge, Functions, Vertex,
-    };
+    use graphific::{Algorithms, AnyGraph, BasicDirectedGraph, BasicUndirectedGraph, Edge, Vertex};
 
     fn init_bdg() -> BasicDirectedGraph<i32, i32> {
         let bdg: BasicDirectedGraph<i32, i32> = BasicDirectedGraph::new();
@@ -59,18 +57,21 @@ mod algo_tests {
     fn bfs() {
         let bdg: BasicDirectedGraph<i32, i32> = init_bdg();
         let bug: BasicUndirectedGraph<i32, i32> = init_bug();
-        let mut fns = Functions::empty();
-        fns.set_edges_comparator(|a, b| a.partial_cmp(b).unwrap());
 
         // test bfs_with_starting_vertex and bfs
         let expected_dg = bdg
-            .bfs_with_starting_vertex(bdg.vertices().first().unwrap(), fns)
+            .bfs_with_starting_vertex(bdg.vertices().first().unwrap(), |a, b| {
+                println!("{}, {}", a, b);
+                a.partial_cmp(b).unwrap()
+            })
             .unwrap();
         let result_dg = bdg.simple_bfs().unwrap();
         assert_eq!(true, result_dg.eq(&expected_dg));
 
         let expected_ug = bug
-            .bfs_with_starting_vertex(bug.vertices().first().unwrap(), fns)
+            .bfs_with_starting_vertex(bug.vertices().first().unwrap(), |a, b| {
+                a.partial_cmp(b).unwrap()
+            })
             .unwrap();
         let result_ug = bug.simple_bfs().unwrap();
         assert_eq!(true, result_ug.eq(&expected_ug));
@@ -102,7 +103,9 @@ mod algo_tests {
             .add_edge(Edge::new(3, 4))
             .unwrap();
 
-        let result_dg = bdg.bfs_with_starting_vertex(&start_vertex, fns).unwrap();
+        let result_dg = bdg
+            .bfs_with_starting_vertex(&start_vertex, |a, b| a.partial_cmp(b).unwrap())
+            .unwrap();
         assert_sorted_vec_eq(&expected_dg.edges(), &result_dg.edges());
         assert_eq!(true, result_dg.eq(&expected_dg));
 
@@ -121,7 +124,9 @@ mod algo_tests {
             .unwrap()
             .add_edge(Edge::new(3, 4))
             .unwrap();
-        let result_ug = bug.bfs_with_starting_vertex(&start_vertex, fns).unwrap();
+        let result_ug = bug
+            .bfs_with_starting_vertex(&start_vertex, |a, b| a.partial_cmp(b).unwrap())
+            .unwrap();
         assert_eq!(true, result_ug.eq(&expected_ug));
     }
 

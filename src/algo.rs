@@ -2,77 +2,6 @@ use crate::{AnyGraph, Edge, Key, Kinship, Value, Vertex, Weight};
 use std::cmp::Ordering;
 use std::collections::{HashSet, VecDeque};
 
-#[derive(Copy, Clone)]
-pub struct Functions<K, V, W>
-where
-    K: Key,
-    V: Value,
-    W: Weight,
-{
-    edges_comparator: Option<fn(&Edge<K, W>, &Edge<K, W>) -> Ordering>,
-    vertex_fn: Option<fn(&Vertex<K, V>)>,
-    pre_fn: Option<fn(&Edge<K, W>)>,
-    sym_fn: Option<fn(&Edge<K, W>)>,
-    post_fn: Option<fn(&Edge<K, W>)>,
-}
-
-impl<K, V, W> Functions<K, V, W>
-where
-    K: Key,
-    V: Value,
-    W: Weight,
-{
-    pub fn empty() -> Self {
-        Functions {
-            edges_comparator: None,
-            vertex_fn: None,
-            pre_fn: None,
-            sym_fn: None,
-            post_fn: None,
-        }
-    }
-
-    pub fn edges_comparator(&self) -> &Option<fn(&Edge<K, W>, &Edge<K, W>) -> Ordering> {
-        &self.edges_comparator
-    }
-
-    pub fn set_edges_comparator(&mut self, f: fn(&Edge<K, W>, &Edge<K, W>) -> Ordering) {
-        self.edges_comparator = Some(f);
-    }
-
-    pub fn vertex_fn(&self) -> &Option<fn(&Vertex<K, V>)> {
-        &self.vertex_fn
-    }
-
-    pub fn set_vertex_fn(&mut self, f: fn(&Vertex<K, V>)) {
-        self.vertex_fn = Some(f);
-    }
-
-    pub fn pre_fn(&self) -> &Option<fn(&Edge<K, W>)> {
-        &self.pre_fn
-    }
-
-    pub fn set_pre_fn(&mut self, f: fn(&Edge<K, W>)) {
-        self.pre_fn = Some(f);
-    }
-
-    pub fn sym_fn(&self) -> &Option<fn(&Edge<K, W>)> {
-        &self.sym_fn
-    }
-
-    pub fn set_sym_fn(&mut self, f: fn(&Edge<K, W>)) {
-        self.sym_fn = Some(f);
-    }
-
-    pub fn post_fn(&self) -> &Option<fn(&Edge<K, W>)> {
-        &self.post_fn
-    }
-
-    pub fn set_post_fn(&mut self, f: fn(&Edge<K, W>)) {
-        self.post_fn = Some(f);
-    }
-}
-
 /// An interface describing all the algorithms that can be used on any kind of graphs.
 pub trait Algorithms<K, V, W>: AnyGraph<K, V, W> + Kinship<K, V, W>
 where
@@ -83,17 +12,15 @@ where
     /// Execute a Broad Search First the return the discovered graph.
     /// There is no order in which the edges are treated.
     fn simple_bfs(&self) -> Option<Self> {
-        let mut fns = Functions::empty();
-        fns.set_edges_comparator(|a, b| a.partial_cmp(b).unwrap());
-        self.bfs(fns)
+        self.bfs(|a, b| a.partial_cmp(b).unwrap())
     }
 
-    fn bfs(&self, fns: Functions<K, V, W>) -> Option<Self> {
+    fn bfs(&self, sorting_edges_fn: fn(&Edge<K, W>, &Edge<K, W>) -> Ordering) -> Option<Self> {
         return if self.vertices().is_empty() {
             None
         } else {
             let first = self.vertices().first().unwrap().clone();
-            self.bfs_with_starting_vertex(&first, fns)
+            self.bfs_with_starting_vertex(&first, sorting_edges_fn)
         };
     }
 
@@ -102,7 +29,7 @@ where
     fn bfs_with_starting_vertex(
         &self,
         starting_vertex: &Vertex<K, V>,
-        fns: Functions<K, V, W>,
+        sorting_edges_fn: fn(&Edge<K, W>, &Edge<K, W>) -> Ordering,
     ) -> Option<Self> {
         if !self.vertices().contains(starting_vertex) {
             return None;
@@ -126,9 +53,7 @@ where
                     .cloned()
                     .collect();
 
-                if let Some(edges_comparator) = fns.edges_comparator() {
-                    neighbours.sort_by(edges_comparator);
-                }
+                neighbours.sort_by(sorting_edges_fn);
 
                 for neighbour in neighbours {
                     if !flagged.contains(neighbour.to()) {
