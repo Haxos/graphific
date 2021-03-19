@@ -1,4 +1,4 @@
-use crate::{Algorithms, AnyGraph, Edge, Key, Kinship, Value, Vertex, Weight};
+use crate::{Algorithms, AnyGraph, Edge, GraphError, Key, Kinship, Value, Vertex, Weight};
 use std::borrow::BorrowMut;
 use std::collections::hash_map::RandomState;
 use std::collections::{HashMap, HashSet};
@@ -36,12 +36,12 @@ where
 
     /// Add a new vertex then return the graph.
     /// Complexity: O(1*).
-    fn add_vertex(&self, vertex: Vertex<K, V>) -> Option<Self> {
+    fn add_vertex(&self, vertex: Vertex<K, V>) -> Result<Self, GraphError> {
         let mut new_graph = self.clone();
         return if new_graph.vertices.borrow_mut().insert(vertex) {
-            Some(new_graph)
+            Ok(new_graph)
         } else {
-            None
+            Err(GraphError::VertexAlreadyExists)
         };
     }
 
@@ -50,77 +50,79 @@ where
     fn remove_vertex(
         &self,
         vertex: &Vertex<K, V>,
-    ) -> Option<(Self, Vertex<K, V>, Vec<Edge<K, W>>)> {
+    ) -> Result<(Self, Vertex<K, V>, Vec<Edge<K, W>>), GraphError> {
         let mut new_graph = self.clone();
         return if let Some(removed_vertex) = self.vertices.get(&vertex) {
             if new_graph.vertices.remove(removed_vertex) {
-                if let Some((new_graph, removed_edges)) =
+                if let Ok((new_graph, removed_edges)) =
                     new_graph.internal_remove_all_edges_where_vertex(removed_vertex)
                 {
-                    Some((new_graph, *removed_vertex, removed_edges))
+                    Ok((new_graph, *removed_vertex, removed_edges))
                 } else {
-                    None
+                    Err(GraphError::Unknown)
                 }
             } else {
-                None
+                Err(GraphError::Unknown)
             }
         } else {
-            None
+            Err(GraphError::VertexDoesNotExists)
         };
     }
 
     /// Remove all vertices then return the new graph, the deleted vertices and all the edges.
     /// Complexity: O(1*).
-    fn remove_all_vertices(&self) -> Option<(Self, Vec<Vertex<K, V>>, Vec<Edge<K, W>>)> {
+    fn remove_all_vertices(
+        &self,
+    ) -> Result<(Self, Vec<Vertex<K, V>>, Vec<Edge<K, W>>), GraphError> {
         let new_graph = BasicDirectedGraph::new();
         let vertices = self.vertices();
         let edges = self.edges();
 
-        Some((new_graph, vertices, edges))
+        Ok((new_graph, vertices, edges))
     }
 
     /// Add a new edge then return the new graph.
     /// Complexity: O(1*).
-    fn add_edge(&self, edge: Edge<K, W>) -> Option<Self> {
+    fn add_edge(&self, edge: Edge<K, W>) -> Result<Self, GraphError> {
         let vertex_from: Vertex<K, V> = Vertex::new(edge.from().clone());
         let vertex_to: Vertex<K, V> = Vertex::new(edge.to().clone());
         if !self.vertices.contains(&vertex_from) || !self.vertices.contains(&vertex_to) {
-            return None;
+            return Err(GraphError::VertexDoesNotExists);
         }
 
         let mut new_graph = self.clone();
         return if new_graph.edges.insert(edge) {
-            Some(new_graph)
+            Ok(new_graph)
         } else {
-            None
+            Err(GraphError::EdgeAlreadyExists)
         };
     }
 
     /// Remove an existing edge then return the new graph and the deleted edge.
     /// Complexity: O(1*).
-    fn remove_edge(&self, edge: &Edge<K, W>) -> Option<(Self, Edge<K, W>)> {
+    fn remove_edge(&self, edge: &Edge<K, W>) -> Result<(Self, Edge<K, W>), GraphError> {
         let mut new_graph = self.clone();
         return if let Some(removed_edge) = self.edges.get(edge) {
             if new_graph.edges.remove(removed_edge) {
-                Some((new_graph, *removed_edge))
+                Ok((new_graph, *removed_edge))
             } else {
-                None
+                Err(GraphError::Unknown)
             }
         } else {
-            None
+            Err(GraphError::EdgeDoesNotExists)
         };
     }
 
     /// Remove all the edges then return the new graph and all the deleted edges.
     /// Complexity: O(1*).
-    fn remove_all_edges(&self) -> Option<(Self, Vec<Edge<K, W>>)> {
+    fn remove_all_edges(&self) -> Result<(Self, Vec<Edge<K, W>>), GraphError> {
         let new_graph = BasicDirectedGraph {
             vertices: self.vertices.clone(),
             edges: HashSet::new(),
         };
         let edges = self.edges();
 
-        Some((new_graph, edges))
+        Ok((new_graph, edges))
     }
 
     /// Remove all existing edges from or to a given vertex, then return the new graph and the deleted edges.
@@ -128,9 +130,9 @@ where
     fn remove_all_edges_where_vertex(
         &self,
         vertex: &Vertex<K, V>,
-    ) -> Option<(Self, Vec<Edge<K, W>>)> {
+    ) -> Result<(Self, Vec<Edge<K, W>>), GraphError> {
         if !self.vertices.contains(vertex) {
-            return None;
+            return Err(GraphError::VertexDoesNotExists);
         }
         self.internal_remove_all_edges_where_vertex(vertex)
     }
@@ -140,9 +142,9 @@ where
     fn remove_all_edges_from_vertex(
         &self,
         vertex: &Vertex<K, V>,
-    ) -> Option<(Self, Vec<Edge<K, W>>)> {
+    ) -> Result<(Self, Vec<Edge<K, W>>), GraphError> {
         if !self.vertices.contains(vertex) {
-            return None;
+            return Err(GraphError::VertexDoesNotExists);
         }
         let mut new_graph = self.clone();
         let removed_edges: Vec<Edge<K, W>> = new_graph
@@ -157,7 +159,7 @@ where
             .filter(|edge| !(edge.from().eq(vertex.key())))
             .collect();
 
-        Some((new_graph, removed_edges))
+        Ok((new_graph, removed_edges))
     }
 }
 
@@ -234,7 +236,7 @@ where
     fn internal_remove_all_edges_where_vertex(
         &self,
         vertex: &Vertex<K, V>,
-    ) -> Option<(Self, Vec<Edge<K, W>>)> {
+    ) -> Result<(Self, Vec<Edge<K, W>>), GraphError> {
         let mut new_graph = self.clone();
         let removed_edges: Vec<Edge<K, W>> = new_graph
             .edges
@@ -248,6 +250,6 @@ where
             .filter(|edge| !(edge.from().eq(vertex.key()) || edge.to().eq(vertex.key())))
             .collect();
 
-        Some((new_graph, removed_edges))
+        Ok((new_graph, removed_edges))
     }
 }

@@ -10,6 +10,7 @@ mod types;
 pub use self::algorithms::Algorithms;
 
 pub use self::any_graph::AnyGraph;
+pub use self::any_graph::GraphError;
 
 pub use self::kinship::Kinship;
 
