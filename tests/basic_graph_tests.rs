@@ -7,7 +7,7 @@ mod utils;
 #[cfg(test)]
 mod basic_directed_graph_tests {
     use crate::utils::assert_sorted_vec_eq;
-    use graphific::{AnyGraph, BasicDirectedGraph, Edge, Kinship, Vertex};
+    use graphific::{AnyGraph, BasicDirectedGraph, Edge, GraphError, Kinship, Vertex};
 
     #[test]
     fn new_basic_directed_graph() {
@@ -36,8 +36,11 @@ mod basic_directed_graph_tests {
         assert_sorted_vec_eq(&vertices, &graph.vertices());
 
         let v3: Vertex<i32, i32> = Vertex::with_value(2, 9);
-        let should_be_none = graph.add_vertex(v3.clone());
-        assert_eq!(true, should_be_none.is_none());
+        let should_already_exists = graph.add_vertex(v3.clone()).err().unwrap();
+        match should_already_exists {
+            GraphError::VertexAlreadyExists => assert!(true),
+            _ => assert!(false),
+        }
     }
 
     #[test]
@@ -69,8 +72,11 @@ mod basic_directed_graph_tests {
         assert_sorted_vec_eq(&excepted_removed_edges, &removed_edges);
 
         // try to remove v1 but fail
-        let should_be_none = graph.remove_vertex(&v1);
-        assert_eq!(true, should_be_none.is_none());
+        let should_not_exists = graph.remove_vertex(&v1).err().unwrap();
+        match should_not_exists {
+            GraphError::VertexDoesNotExists => assert!(true),
+            _ => assert!(false),
+        }
 
         // remove v2
         let (graph, removed_v2, removed_edges) = graph.remove_vertex(&v2).unwrap();
@@ -140,8 +146,11 @@ mod basic_directed_graph_tests {
         let e3: Edge<i32> = Edge::new(v2.key().clone(), v2.key().clone());
 
         // cannot add if their is no vertices
-        let should_be_none = graph.add_edge(e1.clone());
-        assert_eq!(true, should_be_none.is_none());
+        let should_not_exists = graph.add_edge(e1.clone()).err().unwrap();
+        match should_not_exists {
+            GraphError::VertexDoesNotExists => assert!(true),
+            _ => assert!(false),
+        }
 
         graph = graph.add_vertex(v1.clone()).unwrap();
         graph = graph.add_vertex(v2.clone()).unwrap();
@@ -186,8 +195,11 @@ mod basic_directed_graph_tests {
         assert_sorted_vec_eq(&expected_vertices, &graph.vertices());
 
         // try to remove e1 but fail because this edge doesn't exists
-        let should_be_none = graph.remove_edge(&e1);
-        assert_eq!(true, should_be_none.is_none());
+        let should_not_exists = graph.remove_edge(&e1).err().unwrap();
+        match should_not_exists {
+            GraphError::EdgeDoesNotExists => assert!(true),
+            _ => assert!(false),
+        }
         assert_sorted_vec_eq(&expected_edges, &graph.edges());
         assert_sorted_vec_eq(&expected_vertices, &graph.vertices());
 
@@ -280,8 +292,11 @@ mod basic_directed_graph_tests {
         assert_sorted_vec_eq(&expected_vertices, &graph.vertices());
 
         // try to remove v4 but fail because v4 doesn't exists in graph
-        let should_be_none = graph.remove_all_edges_where_vertex(&v4);
-        assert_eq!(true, should_be_none.is_none());
+        let should_not_exists = graph.remove_all_edges_where_vertex(&v4).err().unwrap();
+        match should_not_exists {
+            GraphError::VertexDoesNotExists => assert!(true),
+            _ => assert!(false),
+        }
         assert_sorted_vec_eq(&expected_remaining_edges, &graph.edges());
         assert_sorted_vec_eq(&expected_vertices, &graph.vertices());
 
@@ -336,8 +351,11 @@ mod basic_directed_graph_tests {
         assert_sorted_vec_eq(&expected_vertices, &graph.vertices());
 
         // try to remove v4 but fail because v4 doesn't exists in graph
-        let should_be_none = graph.remove_all_edges_from_vertex(&v4);
-        assert_eq!(true, should_be_none.is_none());
+        let should_not_exists = graph.remove_all_edges_from_vertex(&v4).err().unwrap();
+        match should_not_exists {
+            GraphError::VertexDoesNotExists => assert!(true),
+            _ => assert!(false),
+        }
         assert_sorted_vec_eq(&expected_remaining_edges, &graph.edges());
         assert_sorted_vec_eq(&expected_vertices, &graph.vertices());
 
@@ -510,7 +528,7 @@ mod basic_directed_graph_tests {
 #[cfg(test)]
 mod basic_undirected_graph_tests {
     use crate::utils::assert_sorted_vec_eq;
-    use graphific::{AnyGraph, BasicUndirectedGraph, Edge, Kinship, Vertex};
+    use graphific::{AnyGraph, BasicUndirectedGraph, Edge, GraphError, Kinship, Vertex};
 
     #[test]
     fn new_basic_directed_graph() {
@@ -539,8 +557,11 @@ mod basic_undirected_graph_tests {
         assert_sorted_vec_eq(&vertices, &graph.vertices());
 
         let v3: Vertex<i32, i32> = Vertex::with_value(2, -1);
-        let should_be_none = graph.add_vertex(v3.clone());
-        assert_eq!(true, should_be_none.is_none());
+        let should_already_exists = graph.add_vertex(v3.clone()).err().unwrap();
+        match should_already_exists {
+            GraphError::VertexAlreadyExists => assert!(true),
+            _ => assert!(false),
+        }
     }
 
     #[test]
@@ -572,8 +593,11 @@ mod basic_undirected_graph_tests {
         assert_sorted_vec_eq(&excepted_removed_edges, &removed_edges);
 
         // try to remove v1 but fail
-        let should_be_none = graph.remove_vertex(&v1);
-        assert_eq!(true, should_be_none.is_none());
+        let should_not_exists = graph.remove_vertex(&v1).err().unwrap();
+        match should_not_exists {
+            GraphError::VertexDoesNotExists => assert!(true),
+            _ => assert!(false),
+        }
 
         // remove v2
         let (graph, removed_v2, removed_edges) = graph.remove_vertex(&v2).unwrap();
@@ -643,8 +667,11 @@ mod basic_undirected_graph_tests {
         let e3: Edge<i32> = Edge::new(v2.key().clone(), v2.key().clone());
 
         // cannot add if their is no vertices
-        let should_be_none = graph.add_edge(e1.clone());
-        assert_eq!(true, should_be_none.is_none());
+        let should_not_exists = graph.add_edge(e1.clone()).err().unwrap();
+        match should_not_exists {
+            GraphError::VertexDoesNotExists => assert!(true),
+            _ => assert!(false),
+        }
 
         graph = graph.add_vertex(v1.clone()).unwrap();
         graph = graph.add_vertex(v2.clone()).unwrap();
@@ -655,8 +682,11 @@ mod basic_undirected_graph_tests {
         assert_sorted_vec_eq(&expected_edges, &graph.edges());
 
         // cannot add the same edge in reverse order
-        let should_be_none = graph.add_edge(e2.clone());
-        assert_eq!(true, should_be_none.is_none());
+        let should_already_exists = graph.add_edge(e2.clone()).err().unwrap();
+        match should_already_exists {
+            GraphError::EdgeAlreadyExists => assert!(true),
+            _ => assert!(false),
+        }
 
         // add more edges
         graph = graph.add_edge(e3.clone()).unwrap();
@@ -690,8 +720,11 @@ mod basic_undirected_graph_tests {
         assert_sorted_vec_eq(&expected_vertices, &graph.vertices());
 
         // try to remove e1 but fail because this edge doesn't exists
-        let should_be_none = graph.remove_edge(&e1);
-        assert_eq!(true, should_be_none.is_none());
+        let should_not_exists = graph.remove_edge(&e1).err().unwrap();
+        match should_not_exists {
+            GraphError::EdgeDoesNotExists => assert!(true),
+            _ => assert!(false),
+        }
         assert_sorted_vec_eq(&expected_edges, &graph.edges());
         assert_sorted_vec_eq(&expected_vertices, &graph.vertices());
 
@@ -779,8 +812,11 @@ mod basic_undirected_graph_tests {
         assert_sorted_vec_eq(&expected_vertices, &graph.vertices());
 
         // try to remove v4 but fail because v4 doesn't exists in graph
-        let should_be_none = graph.remove_all_edges_where_vertex(&v4);
-        assert_eq!(true, should_be_none.is_none());
+        let should_not_exists = graph.remove_all_edges_where_vertex(&v4).err().unwrap();
+        match should_not_exists {
+            GraphError::VertexDoesNotExists => assert!(true),
+            _ => assert!(false),
+        }
         assert_sorted_vec_eq(&expected_remaining_edges, &graph.edges());
         assert_sorted_vec_eq(&expected_vertices, &graph.vertices());
 
@@ -835,8 +871,11 @@ mod basic_undirected_graph_tests {
         assert_sorted_vec_eq(&expected_vertices, &graph.vertices());
 
         // try to remove v4 but fail because v4 doesn't exists in graph
-        let should_be_none = graph.remove_all_edges_from_vertex(&v4);
-        assert_eq!(true, should_be_none.is_none());
+        let should_not_exists = graph.remove_all_edges_from_vertex(&v4).err().unwrap();
+        match should_not_exists {
+            GraphError::VertexDoesNotExists => assert!(true),
+            _ => assert!(false),
+        }
         assert_sorted_vec_eq(&expected_remaining_edges, &graph.edges());
         assert_sorted_vec_eq(&expected_vertices, &graph.vertices());
 
