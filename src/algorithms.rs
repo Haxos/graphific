@@ -14,7 +14,7 @@ impl std::fmt::Display for AlgorithmError {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
             AlgorithmError::Unknown => write!(f, "an unknown error has happened"),
-            AlgorithmError::VertexNotInGraph => write!(f, "the vertex isn't "),
+            AlgorithmError::VertexNotInGraph => write!(f, "the vertex isn't in the graph"),
         }
     }
 }
