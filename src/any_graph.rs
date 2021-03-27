@@ -5,13 +5,13 @@ use std::fmt::Formatter;
 
 #[derive(Debug)]
 pub enum GraphError {
+    Unknown,
     VertexAlreadyExists,
     EdgeAlreadyExists,
     VertexDoesNotExists,
     EdgeDoesNotExists,
     LoopCreated,
     CycleCreated,
-    Unknown,
 }
 
 impl std::fmt::Display for GraphError {
@@ -118,4 +118,20 @@ where
     ) -> Result<(Self, Vec<Edge<K, W>>), GraphError> {
         self.remove_all_edges_from_vertex(&Vertex::new(key_from))
     }
+}
+
+pub trait DirectedGraph<K, V, W>: AnyGraph<K, V, W>
+where
+    K: Key,
+    V: Value,
+    W: Weight,
+{
+}
+
+pub trait UndirectedGraph<K, V, W>: AnyGraph<K, V, W>
+where
+    K: Key,
+    V: Value,
+    W: Weight,
+{
 }

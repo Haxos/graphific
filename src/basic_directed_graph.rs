@@ -1,3 +1,4 @@
+use crate::any_graph::DirectedGraph;
 use crate::{Algorithms, AnyGraph, Edge, GraphError, Key, Kinship, Value, Vertex, Weight};
 use std::borrow::BorrowMut;
 use std::collections::hash_map::RandomState;
@@ -161,6 +162,14 @@ where
 
         Ok((new_graph, removed_edges))
     }
+}
+
+impl<K, V, W> DirectedGraph<K, V, W> for BasicDirectedGraph<K, V, W>
+where
+    K: Key,
+    V: Value,
+    W: Weight,
+{
 }
 
 impl<K, V, W> Kinship<K, V, W> for BasicDirectedGraph<K, V, W>

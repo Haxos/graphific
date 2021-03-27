@@ -1,3 +1,4 @@
+use crate::any_graph::UndirectedGraph;
 use crate::{Algorithms, AnyGraph, Edge, GraphError, Key, Kinship, Value, Vertex, Weight};
 use std::borrow::BorrowMut;
 use std::collections::hash_map::RandomState;
@@ -157,6 +158,14 @@ where
     ) -> Result<(Self, Vec<Edge<K, W>>), GraphError> {
         self.remove_all_edges_where_vertex(vertex)
     }
+}
+
+impl<K, V, W> UndirectedGraph<K, V, W> for BasicUndirectedGraph<K, V, W>
+where
+    K: Key,
+    V: Value,
+    W: Weight,
+{
 }
 
 impl<K, V, W> Kinship<K, V, W> for BasicUndirectedGraph<K, V, W>
