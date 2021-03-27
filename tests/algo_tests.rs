@@ -80,10 +80,10 @@ mod algo_tests {
         let empty_dg: BasicDirectedGraph<i32, i32> = BasicDirectedGraph::new();
         let empty_ug: BasicUndirectedGraph<i32, i32> = BasicUndirectedGraph::new();
 
-        let should_be_none = empty_dg.simple_bfs();
-        assert_eq!(true, should_be_none.is_none());
-        let should_be_none = empty_ug.simple_bfs();
-        assert_eq!(true, should_be_none.is_none());
+        let should_be_empty = empty_dg.simple_bfs().unwrap();
+        assert_eq!(true, empty_dg.eq(&should_be_empty));
+        let should_be_empty = empty_ug.simple_bfs().unwrap();
+        assert_eq!(true, empty_ug.eq(&should_be_empty));
 
         // test bfs_with_starting_vertex and bfs
         let start_vertex: Vertex<i32, i32> = Vertex::new(1);
@@ -156,10 +156,10 @@ mod algo_tests {
         let empty_dg: BasicDirectedGraph<i32, i32> = BasicDirectedGraph::new();
         let empty_ug: BasicUndirectedGraph<i32, i32> = BasicUndirectedGraph::new();
 
-        let should_be_none = empty_dg.simple_dfs();
-        assert_eq!(true, should_be_none.is_none());
-        let should_be_none = empty_ug.simple_dfs();
-        assert_eq!(true, should_be_none.is_none());
+        let should_be_empty = empty_dg.simple_dfs().unwrap();
+        assert_eq!(true, empty_dg.eq(&should_be_empty));
+        let should_be_empty = empty_ug.simple_dfs().unwrap();
+        assert_eq!(true, empty_ug.eq(&should_be_empty));
 
         // test dfs_with_starting_vertex and dfs
         let start_vertex: Vertex<i32, i32> = Vertex::new(1);

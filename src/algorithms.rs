@@ -1,6 +1,25 @@
 use crate::{AnyGraph, Edge, Key, Kinship, Value, Vertex, Weight};
 use std::cmp::Ordering;
 use std::collections::{HashSet, VecDeque};
+use std::error::Error;
+use std::fmt::Formatter;
+
+#[derive(Debug)]
+pub enum AlgorithmError {
+    Unknown,
+    VertexNotInGraph,
+}
+
+impl std::fmt::Display for AlgorithmError {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            AlgorithmError::Unknown => write!(f, "an unknown error has happened"),
+            AlgorithmError::VertexNotInGraph => write!(f, "the vertex isn't "),
+        }
+    }
+}
+
+impl Error for AlgorithmError {}
 
 /// An interface describing all the algorithms that can be used on any kind of graphs.
 pub trait Algorithms<K, V, W>: AnyGraph<K, V, W> + Kinship<K, V, W>
@@ -11,11 +30,11 @@ where
 {
     /// Execute a Broad Search First the return the discovered graph.
     /// There is no order in which the edges are treated.
-    fn simple_bfs(&self) -> Option<Self> {
+    fn simple_bfs(&self) -> Result<Self, AlgorithmError> {
         return if let Some(first) = self.vertices().first() {
             self.bfs(first, |a, b| a.partial_cmp(b).unwrap())
         } else {
-            None
+            Ok(self.clone()) // return new empty graph because it has been search
         };
     }
 
@@ -25,9 +44,9 @@ where
         &self,
         starting_vertex: &Vertex<K, V>,
         sorting_edges_fn: fn(&Edge<K, W>, &Edge<K, W>) -> Ordering,
-    ) -> Option<Self> {
+    ) -> Result<Self, AlgorithmError> {
         if !self.vertices().contains(starting_vertex) {
-            return None;
+            return Err(AlgorithmError::VertexNotInGraph);
         }
         let cloned_graph = self.clone();
         let mut queue: VecDeque<K> = VecDeque::new();
@@ -58,19 +77,19 @@ where
                     }
                 }
             }
-            Some(new_graph)
+            Ok(new_graph)
         } else {
-            return None;
+            return Err(AlgorithmError::Unknown);
         };
     }
 
     /// Execute a Deep Search First the return the discovered graph.
     /// There is no order in which the edges are treated.
-    fn simple_dfs(&self) -> Option<Self> {
+    fn simple_dfs(&self) -> Result<Self, AlgorithmError> {
         return if let Some(first) = self.vertices().first() {
             self.dfs(first, |a, b| a.partial_cmp(b).unwrap())
         } else {
-            None
+            Ok(self.clone()) // return new empty graph because it has been search
         };
     }
 
@@ -80,9 +99,9 @@ where
         &self,
         starting_vertex: &Vertex<K, V>,
         sorting_edges_fn: fn(&Edge<K, W>, &Edge<K, W>) -> Ordering,
-    ) -> Option<Self> {
+    ) -> Result<Self, AlgorithmError> {
         if !self.vertices().contains(starting_vertex) {
-            return None;
+            return Err(AlgorithmError::VertexNotInGraph);
         }
         let cloned_graph = self.clone();
         let mut stack: VecDeque<K> = VecDeque::new();
@@ -113,9 +132,9 @@ where
                     }
                 }
             }
-            Some(new_graph)
+            Ok(new_graph)
         } else {
-            return None;
+            return Err(AlgorithmError::Unknown);
         };
     }
 }
